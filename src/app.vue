@@ -1,8 +1,8 @@
 <style>
-html, body {
-  color: #666;
-  font-family: Helvetica, Arial, sans-serif;
-}
+  html, body {
+    color: #666;
+    font-family: Helvetica, Arial, sans-serif;
+  }
 </style>
 
 <template>
@@ -12,10 +12,10 @@ html, body {
 </template>
 
 <script>
-module.exports = {
-  components: {
-    a: require('./components/a.vue'),
-    b: require('./components/b.vue')
+  module.exports = {
+    components: {
+      a: require('./components/a.vue'),
+      b: require('./components/b.vue')
+    }
   }
-}
 </script>
