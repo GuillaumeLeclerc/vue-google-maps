@@ -1,0 +1,19 @@
+{
+  "name": "vue-loader-example",
+  "version": "1.0.0",
+  "description": "Example using Webpack with vue-loader",
+  "main": "index.js",
+  "dependencies": {
+    "vue": "git://github.com/yyx990803/vue#next"
+  },
+  "devDependencies": {
+    "insert-css": "^0.2.0",
+    "vue-loader": "^0.1.0",
+    "webpack": "^1.4.4"
+  },
+  "scripts": {
+    "dev": "webpack --watch"
+  },
+  "author": "Evan You",
+  "license": "MIT"
+}
