@@ -12,7 +12,6 @@
     "css-loader": "^0.14.5",
     "html-loader": "^0.3.0",
     "jade": "^1.11.0",
-    "jade-loader": "^0.7.1",
     "style-loader": "^0.12.3",
     "stylus-loader": "^1.2.0",
     "template-html-loader": "0.0.3",
