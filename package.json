@@ -15,7 +15,7 @@
     "style-loader": "^0.12.3",
     "stylus-loader": "^1.2.0",
     "template-html-loader": "0.0.3",
-    "vue-loader": "^1.1.7",
+    "vue-loader": "^2.0.0",
     "webpack": "^1.9.10"
   },
   "scripts": {
