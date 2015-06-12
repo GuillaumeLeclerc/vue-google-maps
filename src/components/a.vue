@@ -1,5 +1,5 @@
 <style>
-.red {
+comp-a h2 {
   color: #f00;
 }
 </style>

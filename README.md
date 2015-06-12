@@ -8,3 +8,7 @@
 npm install
 npm run dev
 ```
+
+## Notes
+
+The app uses a lot of pre-processors just for demonstration purposes.
