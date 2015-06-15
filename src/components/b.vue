@@ -7,7 +7,3 @@ comp-b h2 {
 <template>
   <h2>Hello from Component B!</h2>
 </template>
-
-<sriprt>
-module.exports = {}
-</sriprt>

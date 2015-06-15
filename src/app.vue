@@ -7,15 +7,24 @@ body
 </style>
 
 <template lang="jade">
-h1 This is the app
-  comp-a
-  comp-b
+h1 {{msg}}
+comp-a
+comp-b
 </template>
 
-<script lang="coffee">
-module.exports =
+<script lang="babel">
+import compA from './components/a.vue'
+import compB from './components/b.vue'
+
+export default {
+  data () {
+    return {
+      msg: 'Hello from Babel!'
+    }
+  },
   components: {
-    'comp-a': require './components/a.vue'
-    'comp-b': require './components/b.vue'
+    'comp-a': compA,
+    'comp-b': compB
   }
+}
 </script>
