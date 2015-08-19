@@ -1,16 +1,21 @@
-<style>
-comp-a h2 {
+<style scoped>
+:scope {
+  border: 1px solid #00f;
+}
+.red {
   color: #f00;
 }
 </style>
 
 <template>
-  <h2 class="red">{{msg}}</h2>
+  <div>
+    <h2 class="red">{{msg}}</h2>
+  </div>
 </template>
 
 <script>
-module.exports = {
-  data: function () {
+export default {
+  data () {
     return {
       msg: 'Hello from Component A!'
     }

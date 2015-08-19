@@ -7,12 +7,13 @@ body
 </style>
 
 <template lang="jade">
-h1 {{msg}}
-comp-a
-comp-b
+div
+  h1 {{msg}}
+  comp-a
+  comp-b
 </template>
 
-<script lang="babel">
+<script>
 import compA from './components/a.vue'
 import compB from './components/b.vue'
 

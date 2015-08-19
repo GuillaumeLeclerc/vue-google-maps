@@ -4,18 +4,19 @@
   "description": "Example using Webpack with vue-loader",
   "main": "index.js",
   "dependencies": {
-    "vue": "^0.12.0"
+    "vue": "^0.12.10"
   },
   "devDependencies": {
     "babel-core": "^5.5.8",
     "babel-loader": "^5.1.4",
+    "babel-runtime": "^5.8.20",
     "css-loader": "^0.15.4",
     "html-loader": "^0.3.0",
     "jade": "^1.11.0",
     "style-loader": "^0.12.3",
     "stylus-loader": "^1.2.0",
     "template-html-loader": "0.0.3",
-    "vue-loader": "^2.0.1",
+    "vue-loader": "^3.0.3",
     "webpack": "^1.9.11"
   },
   "scripts": {
