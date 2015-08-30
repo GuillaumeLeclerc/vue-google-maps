@@ -28,7 +28,7 @@ module: {
 }
 ```
 
-Some explanantions: 
+Some explanations: 
 
 1. Here `js` is the default language for `<script>` blocks.
 
