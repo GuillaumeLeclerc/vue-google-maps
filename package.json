@@ -1,26 +1,28 @@
 {
   "name": "vue-loader-example",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Example using Webpack with vue-loader",
   "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server --inline --hot --config build/webpack.dev.config.js",
+    "build": "webpack --config build/webpack.build.config.js"
+  },
   "dependencies": {
-    "vue": "^0.12.10"
+    "vue": "^1.0.0"
   },
   "devDependencies": {
-    "babel-core": "^5.5.8",
-    "babel-loader": "^5.1.4",
-    "babel-runtime": "^5.8.20",
-    "css-loader": "^0.15.4",
-    "html-loader": "^0.3.0",
+    "babel-core": "^5.8.25",
+    "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.25",
+    "css-loader": "^0.19.0",
     "jade": "^1.11.0",
-    "style-loader": "^0.12.3",
-    "stylus-loader": "^1.2.0",
+    "style-loader": "^0.12.4",
+    "stylus-loader": "^1.4.0",
     "template-html-loader": "0.0.3",
-    "vue-loader": "^3.0.3",
-    "webpack": "^1.9.11"
-  },
-  "scripts": {
-    "dev": "webpack --watch"
+    "vue-html-loader": "^1.0.0",
+    "vue-loader": "^4.0.2",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.0"
   },
   "author": "Evan You",
   "license": "MIT"

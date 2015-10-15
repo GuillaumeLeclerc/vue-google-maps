@@ -11,7 +11,7 @@ npm run dev
 
 #### Configuring Global Pre-processors
 
-You can apply loaders globally for a given language type in all your `*.vue` files. In this example we are applying the `babel-loader` to all JavaScript inside `*.vue` files with this [webpack config](webpack.config.js#L13-L16):
+You can apply loaders globally for a given language type in all your `*.vue` files. In this example we are applying the `babel-loader` to all JavaScript inside `*.vue` files with this [webpack config](build/webpack.dev.config.js#L16):
 
 ``` js
 module: {
@@ -21,18 +21,18 @@ module: {
       loader: vue.withLoaders({
         // apply babel transform to all javascript
         // inside *.vue files.
-        js: 'babel?optional[]=runtime'
+        js: 'babel?optional[]=runtime&loose=true'
       })
     }
   ]
 }
 ```
 
-Some explanations: 
+Some explanations:
 
 1. Here `js` is the default language for `<script>` blocks.
 
-2. The `?optional[]=runtime` query string passed to the loader. This instructs Babel to use helper functions from the `babel-runtime` NPM package instead of injecting the helpers into every single file. You'll want this most of the time.
+2. The `?optional[]=runtime&loose=true` is a query string passed to the loader. This instructs Babel to use helper functions from the `babel-runtime` NPM package instead of injecting the helpers into every single file, and also transform the code in loose mode. You'll want this most of the time.
 
 #### Using Per-file Pre-processors
 
@@ -54,30 +54,12 @@ Note you will have to install `stylus-loader` so that Webpack can handle the com
 
 #### Scoped CSS
 
-> Requires `vue-loader` ^3.0.0
+> Experimental. Requires `vue-loader` ^4.0.0
 
-You can add the `scoped` attribute to a `<style>` block to make it scoped to the current component. Two things to take note:
+You can add the `scoped` attribute to a `<style>` block to make it scoped to the current component. A few things to take note:
 
-1. When using `scoped`, you have to refer to the template root node as `:scope`. If the component template has multiple root-level nodes, `:scope` applies to all of them. So it is preferred to have a single root node when using scoped CSS.
+1. You can include both scoped and non-scoped styles in the same component.
 
-2. Scoped CSS only prevents the styles from polluting the global CSS namespace; it does **not** prevent downward cascading, so it still may affect child components nested under the current one.
+2. A child component's root node will be affected by both the parent's scoped CSS and the child's scoped CSS.
 
-Example:
-
-``` html
-<style scoped>
-:root {
-  border: 1px solid red;
-}
-/* scoped to current component and its children */
-.red {
-  color: red;
-}
-</style>
-
-<template>
-  <div><!-- this should have red border -->
-    <button class="red">This should be red</button>
-  </div>
-</template>
-```
+3. Partials are not affected by scoped styles.

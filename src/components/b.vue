@@ -1,5 +1,5 @@
 <style scoped>
-:scope {
+.container {
   border: 1px solid #f00;
 }
 h2 {
@@ -8,7 +8,7 @@ h2 {
 </style>
 
 <template>
-  <div>
+  <div class="container">
     <h2>Hello from Component B!</h2>
   </div>
 </template>
