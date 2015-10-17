@@ -16,7 +16,7 @@ module.exports = {
         loader: vue.withLoaders({
           // apply babel transform to all javascript
           // inside *.vue files.
-          js: 'babel?optional[]=runtime&loose=true'
+          js: 'babel?optional[]=runtime&loose=all'
         })
       }
     ]
