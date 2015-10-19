@@ -4,8 +4,8 @@
   "description": "Example using Webpack with vue-loader",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --inline --hot --config build/webpack.dev.config.js",
-    "build": "webpack --config build/webpack.build.config.js"
+    "dev": "webpack-dev-server --inline --hot --quiet",
+    "build": "NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
     "vue": "^1.0.0"
