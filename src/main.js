@@ -1,3 +1,9 @@
 var Vue = require('vue')
-var appOptions = require('./app.vue')
-var app = new Vue(appOptions).$mount('#app')
+var App = require('./app.vue')
+
+new Vue({
+  el: 'body',
+  components: {
+    app: App
+  }
+})
