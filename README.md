@@ -10,34 +10,39 @@ npm run dev
 # go to http://localhost:8080/webpack-dev-server/
 ```
 
-#### Configuring Global Pre-processors
+#### ES2015 by Default
 
-You can apply loaders globally for a given language type in all your `*.vue` files. In this example we are applying the `babel-loader` to all JavaScript inside `*.vue` files with this [webpack config](build/webpack.dev.config.js#L16):
+`vue-loader` automatically applies Babel transforms to the JavaScript inside `*.vue` components. Write ES2015 today!
+
+The default Babel options used for Vue.js components are:
 
 ``` js
-module: {
-  loaders: [
-    {
-      test: /\.vue$/,
-      loader: vue.withLoaders({
-        // apply babel transform to all javascript
-        // inside *.vue files.
-        js: 'babel?optional[]=runtime&loose=true'
-      })
-    }
-  ]
+{
+  // use babel-runtime library for common helpers
+  optional: ['runtime'],
+  // use loose mode for faster builds
+  loose: 'all',
+  // disable non-standard stuff (e.g. JSX)
+  nonStandard: false
 }
 ```
 
-Some explanations:
+If you wish to mofidy this, you can add a `babel` field in your webpack config, which will be merged with the default options. For example:
 
-1. Here `js` is the default language for `<script>` blocks.
-
-2. The `?optional[]=runtime&loose=true` is a query string passed to the loader. This instructs Babel to use helper functions from the `babel-runtime` NPM package instead of injecting the helpers into every single file, and also transform the code in loose mode. You'll want this most of the time.
+``` js
+// webpack.config.js
+module.exports = {
+  // other configs...
+  babel: {
+    // enable stage 0 transforms
+    stage: 0
+  }
+}
+```
 
 #### Using Per-file Pre-processors
 
-If you only want to use pre-processors in a certain file, you can add an inline `lang` attribute to a language block:
+If you only want to use pre-processors in a specific file, you can add an inline `lang` attribute to a language block:
 
 ``` html
 <style lang="stylus">

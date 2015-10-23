@@ -22,7 +22,7 @@ import Counter from './components/counter.vue'
 export default {
   data () {
     return {
-      msg: 'Hello from Babel!'
+      msg: 'Hello from vue-loader!'
     }
   },
   components: {
