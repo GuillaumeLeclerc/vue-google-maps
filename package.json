@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --hot --quiet",
-    "build": "NODE_ENV=production webpack --progress --hide-modules"
+    "build": "export NODE_ENV=production && webpack --progress --hide-modules"
   },
   "dependencies": {
     "vue": "^1.0.0"
