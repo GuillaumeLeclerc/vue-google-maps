@@ -15,6 +15,7 @@
     "babel-loader": "^5.3.2",
     "babel-runtime": "^5.8.25",
     "css-loader": "^0.21.0",
+    "file-loader": "^0.8.4",
     "jade": "^1.11.0",
     "style-loader": "^0.13.0",
     "stylus-loader": "^1.4.0",

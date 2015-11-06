@@ -4,7 +4,7 @@ module.exports = {
   entry: './src/main.js',
   output: {
     path: './dist',
-    publicPath: '/dist/',
+    publicPath: 'dist/',
     filename: 'build.js'
   },
   module: {
@@ -12,6 +12,11 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue'
+      },
+      {
+        // edit this for additional asset file types
+        test: /\.(png|jpg|gif)$/,
+        loader: 'file?name=[name].[ext]?[hash]'
       }
     ]
   }
