@@ -1,3 +1,2 @@
-console.log('toto');
-
-module.exports = 3;
+export {load, loaded} from './manager.js';
+export Map from './components/map.vue';
