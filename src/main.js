@@ -1,9 +1,3 @@
-import Vue from 'vue'
-import App from './app.vue'
+console.log('toto');
 
-new Vue({
-  el: 'body',
-  components: {
-    app: App
-  }
-})
+module.exports = 3;

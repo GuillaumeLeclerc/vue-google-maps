@@ -1,10 +1,10 @@
 {
-  "name": "vue-loader-example",
-  "version": "2.0.0",
-  "description": "Example using Webpack with vue-loader",
+  "name": "vue-google-map",
+  "version": "0.0.0",
+  "description": "This is a google map component for Vue.js",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --inline --hot --quiet",
+    "dev": "webpack-dev-server --inline --hot --quiet --port 9999",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
@@ -30,6 +30,6 @@
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.12.0"
   },
-  "author": "Evan You",
+  "author": "Guillaume Leclerc",
   "license": "MIT"
 }

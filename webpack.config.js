@@ -1,11 +1,13 @@
-var webpack = require('webpack')
+/* vim: set softtabstop=2 shiftwidth=2 expandtab : */
+var webpack = require('webpack');
 
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: './dist',
-    publicPath: 'dist/',
-    filename: 'build.js'
+	path: './',
+        filename: "index.js",
+        library: ["VueGoogleMap"],
+        libraryTarget: "umd"
   },
   module: {
     loaders: [
@@ -34,6 +36,7 @@ module.exports = {
 }
 
 if (process.env.NODE_ENV === 'production') {
+  console.log('THIS IS PROD');
   module.exports.plugins = [
     new webpack.DefinePlugin({
       'process.env': {
