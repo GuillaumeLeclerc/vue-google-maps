@@ -2982,7 +2982,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = {
 	  props: props,
-	  replace: false,
 	  data: function data() {
 	    return {
 	      mapObject: null,

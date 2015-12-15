@@ -79,7 +79,6 @@ const events = [
 
 export default {
   props: props,
-  replace: false,
   data() {
     return {
       mapObject: null,
