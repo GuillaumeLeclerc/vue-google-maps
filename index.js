@@ -2882,7 +2882,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = __webpack_require__(15)
 	
 	if (module.exports.__esModule) module.exports = module.exports.default
-	;(typeof module.exports === "function" ? module.exports.options : module.exports).template = __webpack_require__(18)
 	if (false) {(function () {  module.hot.accept()
 	  var hotAPI = require("vue-hot-reload-api")
 	  hotAPI.install(require("vue"), true)
@@ -2909,11 +2908,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _lodash2 = _interopRequireDefault(_lodash);
 	
+	var _eventsBinder = __webpack_require__(23);
+	
+	var _eventsBinder2 = _interopRequireDefault(_eventsBinder);
+	
+	var _propsBinder = __webpack_require__(24);
+	
+	var _propsBinder2 = _interopRequireDefault(_propsBinder);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	/**
-	 * visible is not available, you should use v-if to detach hide a marker
-	 */
 	var props = {
 	  animation: {
 	    twoWay: true,
@@ -2965,24 +2969,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  zIndex: {
 	    type: Number,
 	    twoWay: true
+	  },
+	  visible: {
+	    type: Boolean,
+	    twoWay: true
 	  }
 	}; // /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
-	
-	// <template>
-	//   <div>
-	//     {{zIndex | json}}
-	//   </div>
-	// </template>
 	
 	// <script>
 	
 	var events = ['click', 'rightclick', 'dblclick', 'drag', 'dragstart', 'dragend', 'mouseup', 'mousedown', 'mousover', 'mouseout'];
-	
-	var _attached = false;
-	
-	function capitalizeFirstLetter(string) {
-	  return string.charAt(0).toUpperCase() + string.slice(1);
-	}
 	
 	exports.default = {
 	  props: props,
@@ -2997,90 +2993,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.$dispatch('register-component', this);
 	  },
 	  attached: function attached() {
-	    _attached = true;
-	    if (this.markerObject) {
-	      this.markerObject.setVisible(true);
-	    }
+	    this.visible = true;
 	  },
 	  detached: function detached() {
-	    _attached = false;
-	    if (this.markerObject) {
-	      this.markerObject.setVisible(false);
-	    }
+	    this.visible = false;
 	  },
 	  destroyed: function destroyed() {
-	    this.markerObject.setMap(null);
+	    if (this.markerObject) {
+	      this.markerObject.setMap(null);
+	    }
 	  },
 	
 	  events: {
 	    'map-ready': function mapReady(map) {
-	      var _this = this;
-	
 	      this.mapObject = map;
 	      var options = _lodash2.default.clone(this.$data);
-	      console.log(options);
-	      _lodash2.default.assign(options, {
-	        map: this.mapObject,
-	        visible: _attached
-	      });
-	
+	      options.map = this.mapObject;
 	      this.markerObject = new google.maps.Marker(options);
-	
-	      _lodash2.default.forEach(props, function (_ref, attribute) {
-	        var twoWay = _ref.twoWay;
-	        var type = _ref.type;
-	
-	        var setMethodName = 'set' + capitalizeFirstLetter(attribute);
-	        var getMethodName = 'get' + capitalizeFirstLetter(attribute);
-	        var eventName = attribute + '_changed';
-	
-	        if (!twoWay) {
-	          _this.$watch(attribute, function () {
-	            var attributeValue = _this.options[attribute];
-	            _this.markerObject[getMethodName](attributeValue);
-	          });
-	        } else {
-	          var stable = 0;
-	
-	          var modelWatcher = function modelWatcher() {
-	            stable++;
-	            if (stable > 0) {
-	              var attributeValue = _this[attribute];
-	              _this.markerObject[setMethodName](attributeValue);
-	            }
-	          };
-	
-	          var gmapWatcher = function gmapWatcher() {
-	            stable--;
-	            if (stable < 0) {
-	              var value = _this.markerObject[getMethodName]();
-	              if (attribute === 'position') {
-	                _this[attribute] = {
-	                  lat: value.lat(),
-	                  lng: value.lng()
-	                };
-	              } else {
-	                _this[attribute] = value;
-	              }
-	            }
-	          };
-	
-	          _this.$watch(attribute, modelWatcher, {
-	            deep: type === Object
-	          });
-	
-	          _this.markerObject.addListener(eventName, _lodash2.default.throttle(gmapWatcher, 100, {
-	            leading: true,
-	            trailing: true
-	          }));
-	        }
-	      });
-	
-	      _lodash2.default.forEach(events, function (eventName) {
-	        _this.markerObject.addListener(eventName, function () {
-	          _this.$emit(eventName);
-	        });
-	      });
+	      (0, _propsBinder2.default)(this, this.markerObject, props);
+	      (0, _eventsBinder2.default)(this, this.markerObject, events);
 	    }
 	  }
 	};
@@ -15461,10 +15392,101 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */,
+/* 22 */,
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _lodash = __webpack_require__(16);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	exports.default = function (vueElement, googleMapObject, events) {
+	  _lodash2.default.forEach(events, function (eventName) {
+	    googleMapObject.addListener(eventName, function () {
+	      vueElement.$emit(eventName);
+	    });
+	  });
+	}; /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
+
+/***/ },
+/* 24 */
 /***/ function(module, exports) {
 
-	module.exports = "<div>\n    {{zIndex | json}}\n  </div>";
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	/* vim: set softtabstop=2 shiftwidth=2 expandtab : */
+	
+	function capitalizeFirstLetter(string) {
+	  return string.charAt(0).toUpperCase() + string.slice(1);
+	}
+	
+	exports.default = function (vueElement, googleMapsElement, props) {
+	  _.forEach(props, function (_ref, attribute) {
+	    var twoWay = _ref.twoWay;
+	    var type = _ref.type;
+	
+	    var setMethodName = 'set' + capitalizeFirstLetter(attribute);
+	    var getMethodName = 'get' + capitalizeFirstLetter(attribute);
+	    var eventName = attribute + '_changed';
+	
+	    if (!twoWay) {
+	      vueElement.$watch(attribute, function () {
+	        var attributeValue = vueElement[attribute];
+	        googleMapsElement[getMethodName](attributeValue);
+	      });
+	    } else {
+	      var stable = 0;
+	
+	      var modelWatcher = function modelWatcher() {
+	        stable++;
+	        if (stable > 0) {
+	          var attributeValue = vueElement[attribute];
+	          googleMapsElement[setMethodName](attributeValue);
+	        }
+	      };
+	
+	      var gmapWatcher = function gmapWatcher() {
+	        stable--;
+	        if (stable < 0) {
+	          var value = googleMapsElement[getMethodName]();
+	          if (value instanceof google.maps.LatLng) {
+	            vueElement[attribute] = {
+	              lat: value.lat(),
+	              lng: value.lng()
+	            };
+	          } else {
+	            //TODO Handle more google types !!
+	            vueElement[attribute] = value;
+	          }
+	        }
+	      };
+	
+	      vueElement.$watch(attribute, modelWatcher, {
+	        deep: type === Object
+	      });
+	
+	      googleMapsElement.addListener(eventName, _.throttle(gmapWatcher, 100, {
+	        leading: true,
+	        trailing: true
+	      }));
+	    }
+	  });
+	};
 
 /***/ }
 /******/ ])
