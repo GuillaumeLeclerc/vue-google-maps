@@ -1,18 +1,112 @@
 # vue-google-maps
 
-Simple component to wrap a google map in vue. 
+## Presentation
 
-There is two way data binding when available
+If you want to write write google map this way : 
 
-## Example 
+```html
+<map
+  :center="{lat:10, lng:10}"
+  :map-type-id="terrain"
+  :zoom="7"
+></map
+```
 
-you can see an project example [here](https://github.com/GuillaumeLeclerc/vue-google-maps-example)
+Or use the power of Vue.js within a google map like this:
+```html
+<template>
+  <map
+    :center="center"
+    :zoom="7"
+  >
+    <marker 
+      v-for="m in markers"
+      :position.sync="m.center"
+      :clickable="true"
+      :draggable="true"
+      @click="center=m.center"
+    ></marker>
+  </map>
+</template>
+
+<script>
+  import {loader, Map, Marker} from 'vue-google-maps'
+  
+  loader('YOUR_API_TOKEN')
+  
+  export default {
+    data () {
+      return {
+        center: {lat: 10.0, lng: 10.0},
+        markers: [{
+          position: {lat: 10.0, lng: 10.0}
+        }, {
+          position: {lat: 11.0, 11.0}
+        }]
+      }
+    }
+  }
+</script>
+```
+
+## Example Project 
+
+You can see an project example [here](https://github.com/GuillaumeLeclerc/vue-google-maps-example).
+
+It uses webpack and vue-loader and was "forked" from the vue-loader-example project
+
+## Installation
+
+### With npm (Recommended)
+
+```
+npm install vue-google-maps
+```
+
+You can append `--save` or `--save-dev` to add it to your depency (if yor project also uses npm)
+
+### Manually
+
+Just download the `index.js` file on the root directory of this repository
+
+### Basic usage
+
+#### Reference `vue-google-maps` into your project
+
+If you are using a cool bundler (recommended) you can just do : 
+
+```javascript
+import {loader, Map, Marker} from 'vue-google-maps'
+```
+
+or 
+
+```javascript
+const VueGoogleMap = require('vue-google-maps')
+```
+
+If you are not using any bundler (and you should feel bad). You can just reference the file in a script tag. The library will be available in a global object called `VueGoogleMap`
+
+#### Set your api key
+
+To enable any `vue-google-maps` components you need to set your api token:
+
+```javascript
+loader('YOUR_API_TOKEN')
+// OR (depending on how you refereced it)
+VueGoogleMap.loader('YOUR_API_TOKEN')
+```
+
+## Full documentation
+
+We will soon ad a wiki section but for now there is no real documentation. 
+
+What you need to know is for now only 
+- Map
+- Marker
+
+are implemented but clustered markers will come pretty soon. If you need to know what properties/events are available for each components you can browse the top of the source of each components.
 
 ## Sponsor
 
-This component is sponsored by Home Global group.
-
-## Documentation
-
-To come in the wiki later.
-
+This component is sponsored by [Home Global group](http://homeglobal.ch/).
