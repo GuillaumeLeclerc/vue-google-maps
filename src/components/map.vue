@@ -1,108 +1,78 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
 <template>
-  <div class="vue-map-container">
-    <div class="vue-map"></div>
-    <slot>Here is the fucking default content</slot>
-  </div>
+<div class="vue-map-container">
+  <div class="vue-map"></div>
+  <slot></slot>
+</div>
 </template>
 
 <script>
+import Q from 'q';
+import _ from 'lodash';
 
-  import {loaded} from '../manager.js';
-  import Q from 'q';
+import {loaded} from '../manager.js';
+import eventsBinder from '../utils/eventsBinder.js';
+import propsBinder from '../utils/propsBinder.js';
 
-  const mapCreatedDefered = new Q.defer();
-  const mapCreated = mapCreatedDefered.promise;
+const mapCreatedDefered = new Q.defer();
+const mapCreated = mapCreatedDefered.promise;
 
-  export default {
-    props: {
-      center: {
-        required: true,
-        twoWay: true,
-        type: Object
-      },
-      zoom: {
-        required: true,
-        twoWay: true,
-        type: Number
-      }
-    },
-    replace:false,
-    data() {
-      return {
-        mapObject : null,
-      }
-    },
+const props = {
+  center: {
+    required: true,
+    twoWay: true,
+    type: Object
+  },
+  zoom: {
+    required: false,
+    twoWay: true,
+    type: Number
+  },
+  heading: {
+    twoWay: true,
+    type: Number
+  },
+  mapTypeId: {
+    twoWay: true,
+    type: String
+  }
+};
 
-    ready () {
-      loaded.then(() => {
-        // getting the DOM element where to create the map
-        const element = this.$el.getElementsByClassName('vue-map')[0];
+export default {
+  props: props,
+  replace:false, // necessary for css styles
+  data() {
+    return {
+      mapObject : null,
+    }
+  },
 
-        // creating the map
-        this.mapObject = new google.maps.Map(element, {
-          center: this.center,
-          zoom: this.zoom
-        });
+  ready () {
+    loaded.then(() => {
+      // getting the DOM element where to create the map
+      const element = this.$el.getElementsByClassName('vue-map')[0];
 
-        /**
-         * Handling the 2-way data binding for the center of the map
-         */
-        var ignoreChanginCenter = 0;
+      // creating the map
+      const options = _.clone(this.$data);
+      this.mapObject = new google.maps.Map(element, options);
 
-        this.$watch('center', () => {
-          ignoreChanginCenter--;
-          if (ignoreChanginCenter === -1) {
-            this.mapObject.setCenter(this.center);
-          }
-        }, {
-          deep: true,
-        });
+      //binding properties (two and one way)
+      propsBinder(this, this.mapObject, props);
 
-        this.mapObject.addListener('center_changed', () => {
-          if(ignoreChanginCenter == 0) {
-            const newCenter = this.mapObject.getCenter();
-            this.center = {
-              lat: newCenter.lat(),
-              lng: newCenter.lng()
-            }
-          }
-          ignoreChanginCenter++;
-        });
+      // The map is now created
+      mapCreatedDefered.resolve(this.mapObject);
+    });
+  },
 
-        /**
-         * Handling the 2-way data binding for the zoom of the map
-         */
-        var ignoreChaningZoom = 0;
-
-        this.$watch('zoom', () => {
-          ignoreChaningZoom--;
-          if (ignoreChaningZoom === -1) {
-            this.mapObject.setZoom(this.zoom);
-          } 
-        });
-
-        this.mapObject.addListener('zoom_changed', () => {
-          if(ignoreChaningZoom === 0) {
-            this.zoom = this.mapObject.getZoom();
-          }
-          ignoreChaningZoom++;
-        });
-
-        // The map is now created
-        mapCreatedDefered.resolve(this.mapObject);
+  events: {
+    'register-component': (child) => {
+      mapCreated.then((map) => {
+        child.$emit('map-ready', map);
       });
-    },
-
-    events: {
-      'register-component': (child) => {
-        mapCreated.then((map) => {
-          child.$emit('map-ready', map);
-        });
-      }
     }
   }
+}
 </script>
 
 <style lang="less">

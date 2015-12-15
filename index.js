@@ -2740,42 +2740,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 	
-	var _manager = __webpack_require__(3);
-	
 	var _q = __webpack_require__(4);
 	
 	var _q2 = _interopRequireDefault(_q);
 	
+	var _lodash = __webpack_require__(16);
+	
+	var _lodash2 = _interopRequireDefault(_lodash);
+	
+	var _manager = __webpack_require__(3);
+	
+	var _eventsBinder = __webpack_require__(23);
+	
+	var _eventsBinder2 = _interopRequireDefault(_eventsBinder);
+	
+	var _propsBinder = __webpack_require__(24);
+	
+	var _propsBinder2 = _interopRequireDefault(_propsBinder);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
+	var mapCreatedDefered = new _q2.default.defer(); // /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 	
 	// <template>
-	//   <div class="vue-map-container">
-	//     <div class="vue-map"></div>
-	//     <slot>Here is the fucking default content</slot>
-	//   </div>
+	// <div class="vue-map-container">
+	//   <div class="vue-map"></div>
+	//   <slot></slot>
+	// </div>
 	// </template>
 	
 	// <script>
 	
-	var mapCreatedDefered = new _q2.default.defer();
 	var mapCreated = mapCreatedDefered.promise;
 	
-	exports.default = {
-	  props: {
-	    center: {
-	      required: true,
-	      twoWay: true,
-	      type: Object
-	    },
-	    zoom: {
-	      required: true,
-	      twoWay: true,
-	      type: Number
-	    }
+	var props = {
+	  center: {
+	    required: true,
+	    twoWay: true,
+	    type: Object
 	  },
-	  replace: false,
+	  zoom: {
+	    required: false,
+	    twoWay: true,
+	    type: Number
+	  },
+	  heading: {
+	    twoWay: true,
+	    type: Number
+	  },
+	  mapTypeId: {
+	    twoWay: true,
+	    type: String
+	  }
+	};
+	
+	exports.default = {
+	  props: props,
+	  replace: false, // necessary for css styles
 	  data: function data() {
 	    return {
 	      mapObject: null
@@ -2789,54 +2810,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var element = _this.$el.getElementsByClassName('vue-map')[0];
 	
 	      // creating the map
-	      _this.mapObject = new google.maps.Map(element, {
-	        center: _this.center,
-	        zoom: _this.zoom
-	      });
+	      var options = _lodash2.default.clone(_this.$data);
+	      _this.mapObject = new google.maps.Map(element, options);
 	
-	      /**
-	       * Handling the 2-way data binding for the center of the map
-	       */
-	      var ignoreChanginCenter = 0;
-	
-	      _this.$watch('center', function () {
-	        ignoreChanginCenter--;
-	        if (ignoreChanginCenter === -1) {
-	          _this.mapObject.setCenter(_this.center);
-	        }
-	      }, {
-	        deep: true
-	      });
-	
-	      _this.mapObject.addListener('center_changed', function () {
-	        if (ignoreChanginCenter == 0) {
-	          var newCenter = _this.mapObject.getCenter();
-	          _this.center = {
-	            lat: newCenter.lat(),
-	            lng: newCenter.lng()
-	          };
-	        }
-	        ignoreChanginCenter++;
-	      });
-	
-	      /**
-	       * Handling the 2-way data binding for the zoom of the map
-	       */
-	      var ignoreChaningZoom = 0;
-	
-	      _this.$watch('zoom', function () {
-	        ignoreChaningZoom--;
-	        if (ignoreChaningZoom === -1) {
-	          _this.mapObject.setZoom(_this.zoom);
-	        }
-	      });
-	
-	      _this.mapObject.addListener('zoom_changed', function () {
-	        if (ignoreChaningZoom === 0) {
-	          _this.zoom = _this.mapObject.getZoom();
-	        }
-	        ignoreChaningZoom++;
-	      });
+	      //binding properties (two and one way)
+	      (0, _propsBinder2.default)(_this, _this.mapObject, props);
 	
 	      // The map is now created
 	      mapCreatedDefered.resolve(_this.mapObject);
@@ -2873,7 +2851,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 13 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"vue-map-container\">\n    <div class=\"vue-map\"></div>\n    <slot>Here is the fucking default content</slot>\n  </div>";
+	module.exports = "<div class=\"vue-map-container\">\n  <div class=\"vue-map\"></div>\n  <slot></slot>\n</div>";
 
 /***/ },
 /* 14 */
@@ -15441,12 +15419,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    var setMethodName = 'set' + capitalizeFirstLetter(attribute);
 	    var getMethodName = 'get' + capitalizeFirstLetter(attribute);
-	    var eventName = attribute + '_changed';
+	    var eventName = attribute.toLowerCase() + '_changed';
 	
 	    if (!twoWay) {
 	      vueElement.$watch(attribute, function () {
 	        var attributeValue = vueElement[attribute];
-	        googleMapsElement[getMethodName](attributeValue);
+	        googleMapsElement[setMethodName](attributeValue);
 	      });
 	    } else {
 	      var stable = 0;

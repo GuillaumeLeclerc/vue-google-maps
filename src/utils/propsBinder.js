@@ -8,12 +8,12 @@ export default (vueElement, googleMapsElement, props) => {
   _.forEach(props, ({twoWay: twoWay, type:type}, attribute) => {
     const setMethodName = 'set' + capitalizeFirstLetter(attribute);
     const getMethodName = 'get' + capitalizeFirstLetter(attribute);
-    const eventName = attribute + '_changed';
+    const eventName = attribute.toLowerCase() + '_changed';
 
     if (!twoWay) {
       vueElement.$watch(attribute, () => {
         const attributeValue = vueElement[attribute];
-        googleMapsElement[getMethodName](attributeValue);
+        googleMapsElement[setMethodName](attributeValue);
       });
     } else {
       var stable = 0;
