@@ -3,13 +3,17 @@
 <template>
   <div class="vue-map-container">
     <div class="vue-map"></div>
-    <slot> I have the default content</slot>
+    <slot>Here is the fucking default content</slot>
   </div>
 </template>
 
 <script>
 
-  import {loaded} from '../manager.js'
+  import {loaded} from '../manager.js';
+  import Q from 'q';
+
+  const mapCreatedDefered = new Q.defer();
+  const mapCreated = mapCreatedDefered.promise;
 
   export default {
     props: {
@@ -85,7 +89,18 @@
           }
           ignoreChaningZoom++;
         });
+
+        // The map is now created
+        mapCreatedDefered.resolve(this.mapObject);
       });
+    },
+
+    events: {
+      'register-component': (child) => {
+        mapCreated.then((map) => {
+          child.$emit('map-ready', map);
+        });
+      }
     }
   }
 </script>

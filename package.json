@@ -8,6 +8,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "lodash": "^3.10.1",
     "q": "^1.4.1",
     "vue": "^1.0.0"
   },
