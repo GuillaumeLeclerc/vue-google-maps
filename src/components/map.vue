@@ -36,6 +36,21 @@ const props = {
   }
 };
 
+const events = [
+  'click',
+  'dblclick',
+  'rightclick',
+  'mousemove',
+  'mouseout',
+  'mouseover',
+  'drag',
+  'dragend',
+  'dragstart',
+  'idle',
+  'resize',
+  'tilesloaded'
+]
+
 export default {
   props: props,
   replace:false, // necessary for css styles
@@ -59,8 +74,13 @@ export default {
       //binding properties (two and one way)
       propsBinder(this, this.mapObject, props);
 
+      //binding events
+      eventsBinder(this, this.mapObject, events);
+
       // The map is now created
       this.mapCreatedDefered.resolve(this.mapObject);
+    }, (error) => {
+      throw error;
     });
   },
 
@@ -68,6 +88,8 @@ export default {
     'register-component' (child) {
       this.mapCreated.then((map) => {
         child.$emit('map-ready', map);
+      }, (error) => {
+        throw error;
       });
     }
   }

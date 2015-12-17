@@ -4,8 +4,9 @@ import _ from 'lodash'
 
 export default (vueElement, googleMapObject, events) => {
   _.forEach(events, (eventName) => {
-    googleMapObject.addListener(eventName, () => {
-      vueElement.$emit(eventName);
+    const exposedName = 'g-' + eventName;
+    googleMapObject.addListener(eventName, (ev) => {
+      vueElement.$emit(exposedName, ev);
     });
   });
 }

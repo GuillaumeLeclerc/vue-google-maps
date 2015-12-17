@@ -24,7 +24,7 @@ Or use the power of Vue.js within a google map like this:
       :position.sync="m.center"
       :clickable="true"
       :draggable="true"
-      @click="center=m.center"
+      @g-click="center=m.center"
     ></marker>
   </map>
 </template>
@@ -98,6 +98,10 @@ VueGoogleMap.loader('YOUR_API_TOKEN')
 ```
 
 ## Full documentation
+
+### Note on events
+
+__All events are prefixed with `g-`. Example : `g-click` so it does not interfere with DOM events.__
 
 We will soon ad a wiki section but for now there is no real documentation. 
 
