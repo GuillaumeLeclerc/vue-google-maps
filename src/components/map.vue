@@ -15,9 +15,6 @@ import {loaded} from '../manager.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
 
-const mapCreatedDefered = new Q.defer();
-const mapCreated = mapCreatedDefered.promise;
-
 const props = {
   center: {
     required: true,
@@ -43,6 +40,8 @@ export default {
   props: props,
   replace:false, // necessary for css styles
   data() {
+    this.mapCreatedDefered = new Q.defer();
+    this.mapCreated = this.mapCreatedDefered.promise;
     return {
       mapObject : null,
     }
@@ -61,13 +60,13 @@ export default {
       propsBinder(this, this.mapObject, props);
 
       // The map is now created
-      mapCreatedDefered.resolve(this.mapObject);
+      this.mapCreatedDefered.resolve(this.mapObject);
     });
   },
 
   events: {
-    'register-component': (child) => {
-      mapCreated.then((map) => {
+    'register-component' (child) {
+      this.mapCreated.then((map) => {
         child.$emit('map-ready', map);
       });
     }
