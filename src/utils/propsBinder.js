@@ -4,7 +4,9 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export default (vueElement, googleMapsElement, props) => {
+export default (vueElement, googleMapsElement, props, options) => {
+  options = options || {};
+  var {afterModelChanged : afterModelChanged} = options;
   _.forEach(props, ({twoWay: twoWay, type:type}, attribute) => {
     const setMethodName = 'set' + capitalizeFirstLetter(attribute);
     const getMethodName = 'get' + capitalizeFirstLetter(attribute);
@@ -14,6 +16,9 @@ export default (vueElement, googleMapsElement, props) => {
       vueElement.$watch(attribute, () => {
         const attributeValue = vueElement[attribute];
         googleMapsElement[setMethodName](attributeValue);
+        if (afterModelChanged) {
+          afterModelChanged(attribute, attributeValue);
+        }
       });
     } else {
       var stable = 0;
@@ -23,6 +28,9 @@ export default (vueElement, googleMapsElement, props) => {
         if (stable > 0) {
           const attributeValue = vueElement[attribute];
           googleMapsElement[setMethodName](attributeValue);
+          if (afterModelChanged) {
+            afterModelChanged(attribute, attributeValue);
+          }
         }
       };
 

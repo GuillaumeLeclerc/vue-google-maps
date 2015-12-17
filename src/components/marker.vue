@@ -77,17 +77,20 @@ const events = [
   'mouseout'
 ];
 
+var container;
+
 export default {
   props: props,
   data() {
     return {
       mapObject: null,
       markerObject: null,
+      clusterObject: null
     }
   },
 
   ready () {
-    this.$dispatch('register-component', this);
+    this.$dispatch('register-component', this, 'marker');
   },
 
   attached() {
@@ -99,19 +102,34 @@ export default {
   },
 
   destroyed() {
-    if (this.markerObject) {
+    if (this.mapObject && this.markerObject) {
       this.markerObject.setMap(null);
+    } else if (this.clusterObject && this.markerObject) {
+      this.clusterObject.removeMarker(this.markerObject);
+    }
+  },
+
+  methods: {
+    createMarker (options) {
+      this.markerObject = new google.maps.Marker(options);
+      propsBinder(this, this.markerObject, props);
+      eventsBinder(this, this.markerObject, events);
     }
   },
 
   events: {
-    'map-ready': function(map) {
+    'map-ready' (map) {
       this.mapObject = map;
       const options = _.clone(this.$data);
       options.map = this.mapObject;
-      this.markerObject = new google.maps.Marker(options);
-      propsBinder(this, this.markerObject, props);
-      eventsBinder(this, this.markerObject, events);
+      this.createMarker(options);
+    },
+
+    'cluster-ready' (cluster, id) {
+      this.clusterObject = cluster;
+      const options = _.clone(this.$data);
+      this.createMarker(options);
+      cluster.addMarker(this.markerObject);
     }
   }
 }

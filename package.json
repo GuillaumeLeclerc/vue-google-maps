@@ -1,5 +1,5 @@
 {
-  "name": "vue-google-map",
+  "name": "vue-google-maps",
   "version": "0.0.1",
   "description": "This is a google map component for Vue.js",
   "main": "index.js",
@@ -8,6 +8,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "js-marker-clusterer": "github:googlemaps/js-marker-clusterer#gh-pages",
     "lodash": "^3.10.1",
     "q": "^1.4.1",
     "vue": "^1.0.0"
