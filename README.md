@@ -104,8 +104,13 @@ We will soon ad a wiki section but for now there is no real documentation.
 What you need to know is for now only 
 - Map
 - Marker
+- Clusters
 
-are implemented but clustered markers will come pretty soon. If you need to know what properties/events are available for each components you can browse the top of the source of each components.
+More components will come as the company needs them. Info windows are expected soon. (If the company does not need it I'll probably implement them on my free time).
+
+There is still not documentation yet but it will be there soon too. If you want you can still read the source files. All props are on top of the files and their types are specified. If you don't know what they mean just read the google maps reference documentation.
+
+
 
 ## Sponsor
 
