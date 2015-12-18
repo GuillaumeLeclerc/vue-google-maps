@@ -103,17 +103,7 @@ VueGoogleMap.loader('YOUR_API_TOKEN')
 
 __All events are prefixed with `g-`. Example : `g-click` so it does not interfere with DOM events.__
 
-We will soon ad a wiki section but for now there is no real documentation. 
-
-What you need to know is for now only 
-- Map
-- Marker
-- Clusters
-- Stand alone Info window (both support content prop and inner dom elements)
-
-More components will come as the company needs them.
-
-Documentation is half way done. __Look at the wiki__
+__Documentation is up to date__: take a look at the wiki
 
 
 
