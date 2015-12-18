@@ -43,10 +43,11 @@ export default {
   },
 
   ready () {
-    this.$parent.$dispatch('register-component', this, 'cluster');
+    this.$dispatch('register-cluster', this);
     this.mapReady.then((map) => {
+      this.mapObject = map;
       const options = _.clone(this.$data);
-      this.clusterObject = new MarkerClusterer(map, [], options);
+      this.clusterObject = new MarkerClusterer(this.mapObject, [], options);
 
       this.clusterReadyDefered.resolve(this.clusterObject);
       propsBinder(this, this.clusterObject, props, {
@@ -67,14 +68,10 @@ export default {
     'map-ready' (map) {
       this.mapReadyDefered.resolve(map);
     },
-    'register-component' (element, type) {
-      if (type === 'marker') {
-        this.clusterReady.then((cluster) => {
-          element.$emit('cluster-ready', cluster, this.clusterId);
-        });
-      } else {
-        this.$parent.$dispatch('register-component', element, type);
-      }
+    'register-marker' (element) {
+      this.clusterReady.then((cluster) => {
+        element.$emit('cluster-ready', cluster, this.mapObject);
+      });
     }
   }
 }

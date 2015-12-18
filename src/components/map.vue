@@ -51,15 +51,20 @@ const events = [
   'tilesloaded'
 ]
 
+const registerChild = function (child) {
+    this.mapCreated.then((map) => {
+      child.$emit('map-ready', map);
+    }, (error) => {
+      throw error;
+    });
+}
+
 export default {
   props: props,
   replace:false, // necessary for css styles
   data() {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
-    return {
-      mapObject : null,
-    }
   },
 
   ready () {
@@ -85,13 +90,9 @@ export default {
   },
 
   events: {
-    'register-component' (child) {
-      this.mapCreated.then((map) => {
-        child.$emit('map-ready', map);
-      }, (error) => {
-        throw error;
-      });
-    }
+    'register-marker': registerChild,
+    'register-cluster': registerChild,
+    'register-infoWindow': registerChild,
   }
 }
 </script>

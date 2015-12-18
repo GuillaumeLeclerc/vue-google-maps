@@ -21,6 +21,8 @@ export default (vueElement, googleMapsElement, props, options) => {
         if (afterModelChanged) {
           afterModelChanged(attribute, attributeValue);
         }
+      }, {
+        deep: type === Object  
       });
     } else {
       var stable = 0;

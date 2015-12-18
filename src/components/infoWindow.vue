@@ -35,7 +35,6 @@ const props = {
   },
   position: {
     type: Object,
-    required: true,
     twoWay: false
   },
   zIndex: {
@@ -65,15 +64,18 @@ export default {
       this.disconnect = mutationObserver(this.$el, innerChanged);
     } 
 
-    this.$dispatch('register-component', this, 'infoWindow');
+    this.$dispatch('register-infoWindow', this);
   },
 
   destroyed () {
-    this.disconnect();
+    if (this.disconnect) {
+      this.disconnect();
+    }
+    this.infoWindow.setMap(null);
   },
 
-  events: {
-    'map-ready' (map) {
+  methods: {
+    createInfoWindow(map) {
       this.mapObject = map;
       const options = _.clone(this.options);
       options.content = this.content;
@@ -98,6 +100,23 @@ export default {
         }
       });
       eventsBinder(this, this.infoWindow, events);
+    }
+  },
+
+  events: {
+    'map-ready' (map) {
+      this.createInfoWindow(map);
+    },
+
+    'marker-ready' (cluster, map) {
+      this.position = _.clone(cluster.position);
+      this.createInfoWindow(map);
+      cluster.$watch('position', () => {
+        this.position = _.clone(cluster.position);
+      }, {deep: true});
+      cluster.$on('g-click', () => {
+        this.opened = !this.opened;
+      });
     }
   }
 }

@@ -5,6 +5,7 @@
 import _ from 'lodash';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
+import Q from 'q';
 
 const props = {
   animation: {
@@ -81,20 +82,18 @@ var container;
 
 export default {
   props: props,
-  data() {
-    return {
-      mapObject: null,
-      markerObject: null,
-      clusterObject: null
-    }
-  },
 
-  ready () {
-    this.$dispatch('register-component', this, 'marker');
+  data() {
+    this.mapAvailableDefered = new Q.defer();
+    this.mapAvailable = this.mapAvailableDefered.promise;
   },
 
   attached() {
     this.visible = true;
+  },
+
+  ready () {
+    this.$dispatch('register-marker', this);
   },
 
   detached() {
@@ -102,34 +101,43 @@ export default {
   },
 
   destroyed() {
-    if (this.mapObject && this.markerObject) {
+    if (this.registrar === 'map' && this.markerObject) {
       this.markerObject.setMap(null);
-    } else if (this.clusterObject && this.markerObject) {
+    } else if (this.markerObject) {
       this.clusterObject.removeMarker(this.markerObject);
     }
   },
 
   methods: {
-    createMarker (options) {
+    createMarker (options, map) {
       this.markerObject = new google.maps.Marker(options);
       propsBinder(this, this.markerObject, props);
       eventsBinder(this, this.markerObject, events);
+      this.mapAvailableDefered.resolve(map);
     }
   },
 
   events: {
     'map-ready' (map) {
+      this.registrar = 'map';
       this.mapObject = map;
       const options = _.clone(this.$data);
       options.map = this.mapObject;
-      this.createMarker(options);
+      this.createMarker(options, map);
     },
 
-    'cluster-ready' (cluster, id) {
+    'cluster-ready' (cluster, map) {
+      this.registrar = 'cluster';
       this.clusterObject = cluster;
       const options = _.clone(this.$data);
-      this.createMarker(options);
+      this.createMarker(options, map);
       cluster.addMarker(this.markerObject);
+    },
+
+    'register-infoWindow' (infoWindow) {
+      this.mapAvailable.then((map) => {
+        infoWindow.$emit('marker-ready', this, map);
+      });
     }
   }
 }
