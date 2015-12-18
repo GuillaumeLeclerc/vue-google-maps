@@ -1,5 +1,9 @@
 # vue-google-maps
 
+## Demo:
+
+[Available here](http://guillaumeleclerc.github.io/vue-google-maps-example/)
+
 ## Presentation
 
 If you want to write write google map this way : 
@@ -103,17 +107,7 @@ VueGoogleMap.loader('YOUR_API_TOKEN')
 
 __All events are prefixed with `g-`. Example : `g-click` so it does not interfere with DOM events.__
 
-We will soon ad a wiki section but for now there is no real documentation. 
-
-What you need to know is for now only 
-- Map
-- Marker
-- Clusters
-- Stand alone Info window (both support content prop and inner dom elements)
-
-More components will come as the company needs them.
-
-There is still not documentation yet but it will be there soon too. If you want you can still read the source files. All props are on top of the files and their types are specified. If you don't know what they mean just read the google maps reference documentation.
+__Documentation is up to date__: take a look at the wiki
 
 
 
