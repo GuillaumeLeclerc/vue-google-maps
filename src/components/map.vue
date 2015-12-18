@@ -33,6 +33,11 @@ const props = {
   mapTypeId: {
     twoWay: true,
     type: String
+  },
+  options: {
+    twoWay: true,
+    type: Object,
+    default () {return {}}
   }
 };
 
@@ -73,7 +78,10 @@ export default {
       const element = this.$el.getElementsByClassName('vue-map')[0];
 
       // creating the map
-      const options = _.clone(this.$data);
+      const copiedData = _.clone(this.$data);
+      delete copiedData.options;
+      const options = _.clone(this.options);
+      _.assign(options, copiedData);
       this.mapObject = new google.maps.Map(element, options);
 
       //binding properties (two and one way)
