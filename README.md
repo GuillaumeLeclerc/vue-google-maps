@@ -1,5 +1,9 @@
 # vue-google-maps
 
+## Demo:
+
+[Available here](http://guillaumeleclerc.github.io/vue-google-maps-example/)
+
 ## Presentation
 
 If you want to write write google map this way : 
