@@ -113,7 +113,7 @@ What you need to know is for now only
 
 More components will come as the company needs them.
 
-There is still not documentation yet but it will be there soon too. If you want you can still read the source files. All props are on top of the files and their types are specified. If you don't know what they mean just read the google maps reference documentation.
+Documentation is half way done. __Look at the wiki__
 
 
 
