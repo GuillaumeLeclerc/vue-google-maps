@@ -3,3 +3,4 @@ export Map from './components/map.vue';
 export Marker from './components/marker.vue';
 export Cluster from './components/cluster.vue'
 export InfoWindow from './components/infoWindow.vue'
+export Polyline from './components/polyline.vue'

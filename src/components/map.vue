@@ -56,7 +56,7 @@ const events = [
   'tilesloaded'
 ]
 
-const registerChild = function (child) {
+const registerChild = function (child, type) {
     this.mapCreated.then((map) => {
       child.$emit('map-ready', map);
     }, (error) => {
@@ -101,6 +101,7 @@ export default {
     'register-marker': registerChild,
     'register-cluster': registerChild,
     'register-infoWindow': registerChild,
+    'register-polyline': registerChild
   }
 }
 </script>
