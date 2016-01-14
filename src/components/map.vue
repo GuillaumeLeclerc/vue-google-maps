@@ -101,7 +101,8 @@ export default {
     'register-marker': registerChild,
     'register-cluster': registerChild,
     'register-infoWindow': registerChild,
-    'register-polyline': registerChild
+    'register-polyline': registerChild,
+    'register-circle': registerChild
   }
 }
 </script>
