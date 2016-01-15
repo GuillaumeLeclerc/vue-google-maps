@@ -23,16 +23,20 @@ const props = {
         default: {},
         twoWay: true
     },
+    draggable: {
+        type: Boolean,
+        default: false,
+    },
+    editable: {
+        type: Boolean,
+        default: false,
+    },
     options: {
         type: Object,
-        twoWay: true,
         default: {
             clickable: false,
-            draggable: false,
-            editable: false,
             fillColor: "#000000",
             fillOpacity: 0.3,
-            radius: 1000,
             strokeColor: "#000000",
             strokeOpacity: 1.0,
             strokePosition: "CENTER",
@@ -60,35 +64,43 @@ const events = [
 ]
 
 export default {
-  props: props,
+    props: props,
 
-  ready () {
-    this.$dispatch('register-circle', this);
-  },
+    ready () {
+        this.$dispatch('register-circle', this);
+    },
 
-  methods: {
-    createCircle (options, map) {
-        this.circleObject = new google.maps.Circle(options);
-        propsBinder(this, this.circleObject, props);
-        eventsBinder(this, this.circleObject, events);
-        this.mapAvailableDefered.resolve(map);
+    methods: {
+        createCircle (options, map) {
+            this.circleObject = new google.maps.Circle(options);
+            propsBinder(this, this.circleObject, props);
+            eventsBinder(this, this.circleObject, events);
+            this.mapAvailableDefered.resolve(map);
 
-        // Pass back the bounds
-        this.$watch('radius', () => {
-          this.bounds = this.circleObject.getBounds();
-        });
+            const updateBounds = () => {
+                this.bounds = this.circleObject.getBounds();
+            }
+
+            this.$watch('radius', updateBounds);
+            // because center is an object and we need to be warned even if only the lat or lng change. not the whole reference
+            this.$watch('center', updateBounds, {deep: true});
+        },
+
+        detached () {
+            this.circleObject.setMap(null);
+        }
+    },
+
+    events: {
+        'map-ready' (map) {
+            this.registrar = 'map';
+            this.mapObject = map;
+            const options = _.clone(this.$data);
+            options.map = this.mapObject;
+            delete options.bounds;
+            this.createCircle(options, map);
+        }
     }
-  },
-
-  events: {
-    'map-ready' (map) {
-        this.registrar = 'map';
-        this.mapObject = map;
-        const options = _.clone(this.$data);
-        options.map = this.mapObject;
-        this.createCircle(options, map);
-    }
-  }
 }
 
 
