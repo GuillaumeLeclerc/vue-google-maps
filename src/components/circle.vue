@@ -8,57 +8,39 @@ import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
 
 const props = {
-  clickable: {
-    type: Boolean,
-  },
-  draggable: {
-    type: Boolean
-  },
-  editable: {
-    type: Boolean
-  },
-  center: {
-    type: Object,
-    twoWay: true,
-    required: true
-  },
-  fillColor: {
-    type: String,
-    default: "#000000"
-  },
-  fillOpacity: {
-    type: Number,
-    default: 0.5
-  },
-  radius: {
-    type: Number,
-    default: 1000,
-    twoWay: true
-  },
-  strokeColor: {
-    type: String,
-    default: "#000000"
-  },
-  strokeOpacity: {
-    type: Number,
-    default: 1.0
-  },
-  strokePosition: {
-    type: String,
-    default: 'CENTER' // CENTER, INSIDE, OUTSIDE
-  },
-  strokeWeight: {
-    type: Number,
-    default: 2
-  },
-  visible: {
-    type: Boolean,
-    default :true
-  },
-  zIndex: {
-    type: Number,
-    default: 100,
-  }
+    center: {
+        type: Object,
+        twoWay: true,
+        required: true
+    },
+    radius: {
+        type: Number,
+        default: 1000,
+        twoWay: true
+    },
+    bounds: {
+        type: Object,
+        default: {},
+        twoWay: true
+    },
+    options: {
+        type: Object,
+        twoWay: true,
+        default: {
+            clickable: false,
+            draggable: false,
+            editable: false,
+            fillColor: "#000000",
+            fillOpacity: 0.3,
+            radius: 1000,
+            strokeColor: "#000000",
+            strokeOpacity: 1.0,
+            strokePosition: "CENTER",
+            strokeWeight: 2,
+            visible: true,
+            zIndex: 1000
+        }
+    }
 }
 
 const events = [
@@ -90,6 +72,11 @@ export default {
         propsBinder(this, this.circleObject, props);
         eventsBinder(this, this.circleObject, events);
         this.mapAvailableDefered.resolve(map);
+
+        // Pass back the bounds
+        this.$watch('radius', () => {
+          this.bounds = this.circleObject.getBounds();
+        });
     }
   },
 
