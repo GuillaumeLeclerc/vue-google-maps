@@ -102,7 +102,8 @@ export default {
     'register-cluster': registerChild,
     'register-infoWindow': registerChild,
     'register-polyline': registerChild,
-    'register-circle': registerChild
+    'register-circle': registerChild,
+    'register-rectangle': registerChild
   }
 }
 </script>
