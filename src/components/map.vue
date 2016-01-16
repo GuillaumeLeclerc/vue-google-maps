@@ -35,7 +35,7 @@ const props = {
     type: String
   },
   options: {
-    twoWay: true,
+    twoWay: false,
     type: Object,
     default () {return {}}
   }
