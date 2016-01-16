@@ -10,7 +10,6 @@ import propsBinder from '../utils/propsBinder.js'
 const props = {
     bounds: {
         type: Object,
-        default: {},
         twoWay: true
     },
     draggable: {
@@ -23,22 +22,11 @@ const props = {
     },
     options: {
         type: Object,
-        default: {
-            clickable: false,
-            fillColor: "#000000",
-            fillOpacity: 0.3,
-            strokeColor: "#000000",
-            strokeOpacity: 1.0,
-            strokePosition: "CENTER",
-            strokeWeight: 2,
-            visible: true,
-            zIndex: 1000
-        }
+        twoWay: false
     }
 }
 
 const events = [
-    'bounds_changed',
     'click',
     'dblclick',
     'drag',
@@ -63,8 +51,7 @@ export default {
         createRectangle (options, map) {
             this.rectangleObject = new google.maps.Rectangle(options);
             propsBinder(this, this.rectangleObject, props);
-            eventsBinder(this, this.rectangleObject, events);
-            this.mapAvailableDefered.resolve(map);
+            eventBinder(this, this.rectangleObject, events);
 
             const updateBounds = () => {
                 this.bounds = this.rectangleObject.getBounds();
@@ -73,9 +60,10 @@ export default {
             this.$watch('bounds_changed', updateBounds, {deep: true});
         },
 
-        detached () {
-            this.rectangleObject.setMap(null);
-        }
+    },
+             
+    detached () {
+        this.rectangleObject.setMap(null);
     },
 
     events: {
@@ -84,7 +72,6 @@ export default {
             this.mapObject = map;
             const options = _.clone(this.$data);
             options.map = this.mapObject;
-            // delete options.bounds;
             this.createRectangle(options, map);
         }
     }
