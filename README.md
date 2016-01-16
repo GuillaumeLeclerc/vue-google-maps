@@ -34,9 +34,9 @@ Or use the power of Vue.js within a google map like this:
 </template>
 
 <script>
-  import {loader, Map, Marker} from 'vue-google-maps'
+  import {load, Map, Marker} from 'vue-google-maps'
   
-  loader('YOUR_API_TOKEN')
+  load('YOUR_API_TOKEN')
   
   export default {
     data () {
@@ -80,7 +80,7 @@ Just download the `index.js` file on the root directory of this repository
 If you are using a cool bundler (recommended) you can just do : 
 
 ```javascript
-import {loader, Map, Marker} from 'vue-google-maps'
+import {load, Map, Marker} from 'vue-google-maps'
 ```
 
 or 
@@ -96,9 +96,9 @@ If you are not using any bundler (and you should feel bad). You can just referen
 To enable any `vue-google-maps` components you need to set your api token:
 
 ```javascript
-loader('YOUR_API_TOKEN')
+load('YOUR_API_TOKEN')
 // OR (depending on how you refereced it)
-VueGoogleMap.loader('YOUR_API_TOKEN')
+VueGoogleMap.load('YOUR_API_TOKEN')
 ```
 
 ## Full documentation
