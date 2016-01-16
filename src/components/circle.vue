@@ -20,7 +20,6 @@ const props = {
     },
     bounds: {
         type: Object,
-        default: {},
         twoWay: true
     },
     draggable: {
@@ -33,22 +32,11 @@ const props = {
     },
     options: {
         type: Object,
-        default: {
-            clickable: false,
-            fillColor: "#000000",
-            fillOpacity: 0.3,
-            strokeColor: "#000000",
-            strokeOpacity: 1.0,
-            strokePosition: "CENTER",
-            strokeWeight: 2,
-            visible: true,
-            zIndex: 1000
-        }
+        twoWay: false
     }
 }
 
 const events = [
-    'center_changed',
     'click',
     'dblclick',
     'drag',
@@ -84,12 +72,13 @@ export default {
             this.$watch('radius', updateBounds);
             // because center is an object and we need to be warned even if only the lat or lng change. not the whole reference
             this.$watch('center', updateBounds, {deep: true});
-        },
-
-        detached () {
-            this.circleObject.setMap(null);
         }
+
     },
+
+      detached () {
+          this.circleObject.setMap(null);
+      },
 
     events: {
         'map-ready' (map) {
