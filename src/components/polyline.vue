@@ -8,44 +8,20 @@ import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
 
 const props = {
-  clickable: {
-    type: Boolean,
-  },
   draggable: {
     type: Boolean
   },
   editable: {
-    type: Boolean
+    type: Boolean,
   },
-  geodesic: {
-    type: Boolean
-  },
-  icons: {
-    type: Array
+  options: {
+    twoWay: false,
+    type: Object
   },
   path: {
     type: Array,
     twoWay: true
   },
-  strokeColor: {
-    type: String,
-    default: "#000000"
-  },
-  strokeOpacity: {
-    type: Number,
-    default: 1.0
-  },
-  strokeWeight: {
-    type: Number,
-    default: 2
-  },
-  visible: {
-    type: Boolean,
-    default :true
-  },
-  zIndex: {
-    type: Number
-  }
 }
 
 const events = [
@@ -83,6 +59,8 @@ export default {
     'map-ready' (map) {
       this.mapObject = map;
       const options = _.clone(this.$data);
+      delete options.options;
+      _.assign(options, this.options);
       this.polyLineObject = new google.maps.Polyline(options);
 
       const localProps = _.clone(props);
