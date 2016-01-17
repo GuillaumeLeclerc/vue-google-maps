@@ -53,6 +53,7 @@ const events = [
 
 export default {
     props: props,
+    version: 2,
 
     ready () {
         this.$dispatch('register-circle', this);
@@ -61,9 +62,12 @@ export default {
     methods: {
         createCircle (options, map) {
             this.circleObject = new google.maps.Circle(options);
-            propsBinder(this, this.circleObject, props);
-            eventsBinder(this, this.circleObject, events);
-            this.mapAvailableDefered.resolve(map);
+            // we cant bind bounds because there is no `setBounds` method
+            // on the Circle object
+            const boundProps = _.clone(props);
+            delete boundProps.bounds;
+            propsBinder(this, this.circleObject, boundProps);
+            eventBinder(this, this.circleObject, events);
 
             const updateBounds = () => {
                 this.bounds = this.circleObject.getBounds();
@@ -83,6 +87,7 @@ export default {
 
     events: {
         'map-ready' (map) {
+            console.log('registered');
             this.registrar = 'map';
             this.mapObject = map;
             const options = _.clone(this.$data);
