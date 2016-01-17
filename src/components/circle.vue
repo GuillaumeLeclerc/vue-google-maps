@@ -87,7 +87,6 @@ export default {
 
     events: {
         'map-ready' (map) {
-            console.log('registered');
             this.registrar = 'map';
             this.mapObject = map;
             const options = _.clone(this.$data);
