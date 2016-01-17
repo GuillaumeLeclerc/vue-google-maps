@@ -69,6 +69,16 @@ export default {
     this.$dispatch('register-polyline', this);
   },
 
+  attached () {
+    if (this.mapObject && this.polyLineObject.getMap() === null) {
+      this.polyLineObject.setMap(this.mapObject);
+    }
+  },
+
+  detached () {
+    this.polyLineObject.setMap(null);
+  },
+
   events: {
     'map-ready' (map) {
       this.mapObject = map;
