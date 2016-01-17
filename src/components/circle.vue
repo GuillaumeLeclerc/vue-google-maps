@@ -72,6 +72,7 @@ export default {
             this.$watch('radius', updateBounds);
             // because center is an object and we need to be warned even if only the lat or lng change. not the whole reference
             this.$watch('center', updateBounds, {deep: true});
+            updateBounds();
         }
 
     },
