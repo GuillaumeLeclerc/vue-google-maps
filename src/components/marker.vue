@@ -74,7 +74,7 @@ const events = [
   'dragend',
   'mouseup',
   'mousedown',
-  'mousover',
+  'mouseover',
   'mouseout'
 ];
 
