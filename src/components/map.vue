@@ -34,6 +34,10 @@ const props = {
     twoWay: true,
     type: String
   },
+  bounds: {
+    type: Object,
+    twoWay: true,
+  },
   options: {
     twoWay: false,
     type: Object,
@@ -53,7 +57,8 @@ const events = [
   'dragstart',
   'idle',
   'resize',
-  'tilesloaded'
+  'tilesloaded',
+  'bounds_changed'
 ]
 
 const registerChild = function (child, type) {
@@ -84,11 +89,17 @@ export default {
       _.assign(options, copiedData);
       this.mapObject = new google.maps.Map(element, options);
 
+      // we con't want to bind props because it's a kind of "computed" property
+      const boundProps = _.clone(props);
+      delete boundProps.bounds;
       //binding properties (two and one way)
-      propsBinder(this, this.mapObject, props);
+      propsBinder(this, this.mapObject, boundProps);
 
       //binding events
       eventsBinder(this, this.mapObject, events);
+
+      // update the bounds
+      this.$emit('g-bounds_changed');
 
       // The map is now created
       this.mapCreatedDefered.resolve(this.mapObject);
@@ -103,7 +114,10 @@ export default {
     'register-infoWindow': registerChild,
     'register-polyline': registerChild,
     'register-circle': registerChild,
-    'register-rectangle': registerChild
+    'register-rectangle': registerChild,
+    'g-bounds_changed' () {
+      this.bounds=this.mapObject.getBounds();
+    }
   }
 }
 </script>
