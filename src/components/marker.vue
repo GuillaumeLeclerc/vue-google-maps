@@ -1,5 +1,9 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
+<template>
+  <div></div>
+</template>
+
 <script>
 
 import _ from 'lodash';
@@ -86,6 +90,7 @@ export default {
   data() {
     this.mapAvailableDefered = new Q.defer();
     this.mapAvailable = this.mapAvailableDefered.promise;
+    this.destroyed = false;
   },
 
   attached() {
@@ -93,6 +98,7 @@ export default {
   },
 
   ready () {
+    console.log('component created');
     this.$dispatch('register-marker', this);
   },
 
@@ -100,7 +106,8 @@ export default {
     this.visible = false;
   },
 
-  destroyed() {
+  beforeDestroy() {
+    this.destroyed = true;
     if (this.registrar === 'map' && this.markerObject) {
       this.markerObject.setMap(null);
     } else if (this.markerObject) {
@@ -110,10 +117,12 @@ export default {
 
   methods: {
     createMarker (options, map) {
-      this.markerObject = new google.maps.Marker(options);
-      propsBinder(this, this.markerObject, props);
-      eventsBinder(this, this.markerObject, events);
-      this.mapAvailableDefered.resolve(map);
+      if (!this.destroyed) {
+        this.markerObject = new google.maps.Marker(options);
+        propsBinder(this, this.markerObject, props);
+        eventsBinder(this, this.markerObject, events);
+        this.mapAvailableDefered.resolve(map);
+      }
     }
   },
 
