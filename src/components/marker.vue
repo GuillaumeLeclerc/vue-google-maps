@@ -98,7 +98,6 @@ export default {
   },
 
   ready () {
-    console.log('component created');
     this.$dispatch('register-marker', this);
   },
 
