@@ -14,7 +14,7 @@ import Q from 'q';
 const props = {
   animation: {
     twoWay: true,
-    type: Object
+    type: Number
   },
   attribution: {
     type: Object,
