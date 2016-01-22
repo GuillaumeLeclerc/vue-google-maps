@@ -101,8 +101,11 @@ export default {
       // update the bounds
       this.$emit('g-bounds_changed');
 
-      // The map is now created
-      this.mapCreatedDefered.resolve(this.mapObject);
+      // wait before google maps has loaded the map to avoid bug with info windows
+      this.$once('g-bounds_changed', () => {
+        // The map is now created
+        this.mapCreatedDefered.resolve(this.mapObject);
+      });
     }, (error) => {
       throw error;
     });
