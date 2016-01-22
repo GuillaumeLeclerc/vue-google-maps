@@ -1,9 +1,5 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
-<template>
-  <div></div>
-</template>
-
 <script>
 
 import _ from 'lodash';

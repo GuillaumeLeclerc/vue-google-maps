@@ -2,6 +2,7 @@
 
 <template>
 <div>
+BIATCH
   <slot>
   <div class="you-will-never-find-this"></div>
   </slot>
@@ -65,6 +66,7 @@ export default {
     } 
 
     this.$dispatch('register-infoWindow', this);
+    this.markerObject = null;
   },
 
   destroyed () {
@@ -75,46 +77,58 @@ export default {
   },
 
   methods: {
+    openInfoWindow () {
+        if(this.opened) {
+          if (this.markerObject !== null) {
+            this.infoWindow.open(this.mapObject, this.markerObject);
+          } else {
+            this.infoWindow.open(this.mapObject);
+          }
+        } else {
+          this.infoWindow.close();
+        }
+    },
     createInfoWindow(map) {
       this.mapObject = map;
+
+      // setting options
       const options = _.clone(this.options);
       options.content = this.content;
-      options.position = this.position;
-      this.infoWindow = new google.maps.InfoWindow(options);
-      if (this.opened) {
-        this.infoWindow.open(this.mapObject);
+      // only set the position if the info window is not bound to a marker
+      if (this.markerObject === null) {
+        options.position = this.position;
       }
+
+      this.infoWindow = new google.maps.InfoWindow(options);
+
+      // Binding
       const propsToBind = _.clone(props);
       delete propsToBind.opened;
       propsBinder(this, this.infoWindow, propsToBind);
+      eventsBinder(this, this.infoWindow, events);
 
+      // watching
       this.infoWindow.addListener('closeclick', () => {
         this.opened = false;
       });
 
       this.$watch('opened', () => {
-        if(this.opened) {
-          this.infoWindow.open(this.mapObject);
-        } else {
-          this.infoWindow.close();
-        }
+        this.openInfoWindow();
       });
-      eventsBinder(this, this.infoWindow, events);
-    }
-  },
+
+      // Open if needed
+      this.openInfoWindow();
+    } },
 
   events: {
     'map-ready' (map) {
       this.createInfoWindow(map);
     },
 
-    'marker-ready' (cluster, map) {
-      this.position = _.clone(cluster.position);
+    'marker-ready' (marker, map) {
+      this.markerObject = marker.markerObject;
       this.createInfoWindow(map);
-      cluster.$watch('position', () => {
-        this.position = _.clone(cluster.position);
-      }, {deep: true});
-      cluster.$on('g-click', () => {
+      marker.$on('g-click', () => {
         this.opened = !this.opened;
       });
     }
