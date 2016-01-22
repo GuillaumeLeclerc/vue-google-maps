@@ -2,7 +2,6 @@
 
 <template>
 <div>
-BIATCH
   <slot>
   <div class="you-will-never-find-this"></div>
   </slot>
