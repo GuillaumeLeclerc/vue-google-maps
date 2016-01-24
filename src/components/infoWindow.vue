@@ -53,6 +53,8 @@ export default {
   replace: false,
   props: props,
   ready () {
+    this.destroyed = false;
+
     // if the user set the content of the info window by adding children to the 
     // InfoWindow element
     this.$el.style.display='none';
@@ -72,7 +74,10 @@ export default {
     if (this.disconnect) {
       this.disconnect();
     }
-    this.infoWindow.setMap(null);
+    if (this.infoWindow) {
+      this.infoWindow.setMap(null);
+    }
+    this.destroyed = true;
   },
 
   methods: {
@@ -87,7 +92,9 @@ export default {
           this.infoWindow.close();
         }
     },
+
     createInfoWindow(map) {
+      if (this.destroyed) return;
       this.mapObject = map;
 
       // setting options

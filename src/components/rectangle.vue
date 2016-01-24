@@ -44,11 +44,13 @@ export default {
     props: props,
 
     ready () {
+        this.destroyed = false;
         this.$dispatch('register-rectangle', this);
     },
 
     methods: {
         createRectangle (options, map) {
+            if (this.destroyed) return;
             this.rectangleObject = new google.maps.Rectangle(options);
             propsBinder(this, this.rectangleObject, props);
             eventBinder(this, this.rectangleObject, events);
@@ -62,8 +64,11 @@ export default {
 
     },
              
-    detached () {
-        this.rectangleObject.setMap(null);
+    destroyed () {
+        if (this.rectangleObject) {
+          this.rectangleObject.setMap(null);
+        }
+        this.destroyed = true;
     },
 
     events: {

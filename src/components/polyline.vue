@@ -42,6 +42,7 @@ export default {
   props: props,
 
   ready () {
+    this.destroyed = false;
     this.$dispatch('register-polyline', this);
   },
 
@@ -51,17 +52,23 @@ export default {
     }
   },
 
-  detached () {
-    this.polyLineObject.setMap(null);
+  destroyed () {
+    this.destroyed = true;
+    if (this.polyLineObject) {
+      this.polyLineObject.setMap(null);
+    }
   },
 
   events: {
     'map-ready' (map) {
+      if (this.destroyed) return;
       this.mapObject = map;
       const options = _.clone(this.$data);
       delete options.options;
       _.assign(options, this.options);
       this.polyLineObject = new google.maps.Polyline(options);
+
+      this.polyLineObject.setMap(this.mapObject);
 
       const localProps = _.clone(props);
       //we don't want the propBinder to handle this one because it is specific
