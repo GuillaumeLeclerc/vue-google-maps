@@ -101,7 +101,7 @@ export default {
     this.visible = false;
   },
 
-  beforeDestroy() {
+  destroyed() {
     this.destroyed = true;
     if (this.registrar === 'map' && this.markerObject) {
       this.markerObject.setMap(null);
