@@ -36,7 +36,7 @@ Or use the power of Vue.js within a google map like this:
 <script>
   import {load, Map, Marker} from 'vue-google-maps'
   
-  load('YOUR_API_TOKEN')
+  load('YOUR_API_TOKEN','OPTIONAL VERSION NUMBER')
   
   export default {
     data () {
