@@ -6,14 +6,14 @@
 
 ## Presentation
 
-If you want to write write google map this way : 
+If you want to write google map this way : 
 
 ```html
 <map
   :center="{lat:10, lng:10}"
   :map-type-id="terrain"
   :zoom="7"
-></map
+></map>
 ```
 
 Or use the power of Vue.js within a google map like this:
