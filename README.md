@@ -83,6 +83,14 @@ If you are using a cool bundler (recommended) you can just do :
 import {load, Map, Marker} from 'vue-google-maps'
 ```
 
+if your project already contain `vue` itself. It is recommended you include this way:
+
+```javascript
+import {load, Map, Marker} from 'node_modules/vue-google-maps/src/index.js'
+```
+
+This way you will not use the bundled version of `vue-google-maps`. If you don't do it this way your project will contain `vue` two times, which will increase the size of your application.
+
 or 
 
 ```javascript
