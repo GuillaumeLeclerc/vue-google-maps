@@ -60,8 +60,8 @@ const props = {
     twoWay: true
   },
   visible: {
-    type: Boolean,
-    twoWay: true
+    twoWay: true,
+    default: 'auto'
   }
 }
 
@@ -90,7 +90,9 @@ export default {
   },
 
   attached() {
-    this.visible = true;
+    if (this.visible === 'auto') {
+      this.visible = true;
+    }
   },
 
   ready () {
@@ -98,7 +100,9 @@ export default {
   },
 
   detached() {
-    this.visible = false;
+    if (this.visible === 'auto') {
+      this.visible = false;
+    }
   },
 
   destroyed() {
