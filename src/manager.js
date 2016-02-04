@@ -11,10 +11,14 @@ window['vueGoogleMapsInit'] = () => {
   loadingDefered.resolve();
 }
 
-export const load = (apiKey, version) => {
+export const load = (apiKey, version, libraries) => {
   if (!setUp) {
     const googleMapScript = document.createElement('SCRIPT');
-    let url = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=vueGoogleMapsInit';
+    let librariesPath = "";
+    if (libraries && libraries.length > 0) {
+      librariesPath = libraries.join(',');
+    }
+    let url = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=vueGoogleMapsInit&libraries=' + librariesPath;
     if (version) {
       url = url + '&v=' + version;
     }
