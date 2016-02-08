@@ -70,6 +70,14 @@ const callableMethods = [
 
 const methods = {};
 
+const registerChild = function (child, type) {
+    this.mapCreated.then((map) => {
+      child.$emit('map-ready', map);
+    }, (error) => {
+      throw error;
+    });
+}
+
 const eventListeners = {
   'register-marker': registerChild,
   'register-cluster': registerChild,
@@ -96,14 +104,6 @@ _.each(callableMethods, function (methodName) {
   eventListeners['g-' + methodName] = applier;
   methods[methodName] = applier;
 });
-
-const registerChild = function (child, type) {
-    this.mapCreated.then((map) => {
-      child.$emit('map-ready', map);
-    }, (error) => {
-      throw error;
-    });
-}
 
 export default {
   props: props,
