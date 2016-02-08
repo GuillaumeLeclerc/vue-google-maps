@@ -59,7 +59,43 @@ const events = [
   'resize',
   'tilesloaded',
   'bounds_changed'
-]
+];
+
+const callableMethods = [
+  'panBy',
+  'panTo',
+  'panToBounds',
+  'fitBounds'
+];
+
+const methods = {};
+
+const eventListeners = {
+  'register-marker': registerChild,
+  'register-cluster': registerChild,
+  'register-infoWindow': registerChild,
+  'register-polyline': registerChild,
+  'register-circle': registerChild,
+  'register-rectangle': registerChild,
+  'g-bounds_changed' () {
+    this.bounds=this.mapObject.getBounds();
+  },
+  'g-fitBounds' (bounds) {
+    if (this.mapObject && bounds) {
+      this.mapObject.fitBounds
+    }
+  }
+}
+
+_.each(callableMethods, function (methodName) {
+   const applier= function() {
+    if(this.mapObject) {
+      this.mapObject[methodName].apply(this.mapObject, arguments);
+    }
+  }
+  eventListeners['g-' + methodName] = applier;
+  methods[methodName] = applier;
+});
 
 const registerChild = function (child, type) {
     this.mapCreated.then((map) => {
@@ -110,18 +146,8 @@ export default {
       throw error;
     });
   },
-
-  events: {
-    'register-marker': registerChild,
-    'register-cluster': registerChild,
-    'register-infoWindow': registerChild,
-    'register-polyline': registerChild,
-    'register-circle': registerChild,
-    'register-rectangle': registerChild,
-    'g-bounds_changed' () {
-      this.bounds=this.mapObject.getBounds();
-    }
-  }
+  events: eventListeners,
+  methods: methods
 }
 </script>
 
