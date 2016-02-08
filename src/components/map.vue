@@ -15,7 +15,6 @@ import {loaded} from '../manager.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
 
-
 const props = {
   center: {
     required: true,
@@ -38,7 +37,6 @@ const props = {
   bounds: {
     type: Object,
     twoWay: true,
-    setter: 'fitBounds'
   },
   options: {
     twoWay: false,
@@ -91,8 +89,11 @@ export default {
       _.assign(options, copiedData);
       this.mapObject = new google.maps.Map(element, options);
 
+      // we con't want to bind props because it's a kind of "computed" property
+      const boundProps = _.clone(props);
+      delete boundProps.bounds;
       //binding properties (two and one way)
-      propsBinder(this, this.mapObject, props);
+      propsBinder(this, this.mapObject, boundProps);
 
       //binding events
       eventsBinder(this, this.mapObject, events);
@@ -117,6 +118,9 @@ export default {
     'register-polyline': registerChild,
     'register-circle': registerChild,
     'register-rectangle': registerChild,
+    'g-bounds_changed' () {
+      this.bounds=this.mapObject.getBounds();
+    }
   }
 }
 </script>

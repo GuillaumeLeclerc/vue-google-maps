@@ -9,13 +9,8 @@ function capitalizeFirstLetter(string) {
 export default (vueElement, googleMapsElement, props, options) => {
   options = options || {};
   var {afterModelChanged : afterModelChanged} = options;
-  _.forEach(props, ({twoWay: twoWay, type:type, setter:setter}, attribute) => {
-    let setMethodName;
-    if (setter) {
-      setMethodName = setter;
-    } else {
-      setMethodName = 'set' + capitalizeFirstLetter(attribute);
-    }
+  _.forEach(props, ({twoWay: twoWay, type:type}, attribute) => {
+    const setMethodName = 'set' + capitalizeFirstLetter(attribute);
     const getMethodName = 'get' + capitalizeFirstLetter(attribute);
     const eventName = attribute.toLowerCase() + '_changed';
 
