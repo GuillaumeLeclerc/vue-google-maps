@@ -1,5 +1,6 @@
 <template>
-  <input type="text" v-el:input :placeholder="placeholder"/>
+    <label for="vueGoogleMapsPlaceInput" v-if="label">{{ label }}</label>
+    <input id="vueGoogleMapsPlaceInput" type="text" v-el:input :placeholder="placeholder" :class="class"/>
 </template>
 
 <script>
@@ -35,6 +36,15 @@
       placeholder: {
         required: false,
         type: String
+      },
+      class: {
+          required: false,
+          type: String
+      },
+      label: {
+          required: false,
+          type: String,
+          default: null
       }
   }
 
