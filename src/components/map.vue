@@ -92,6 +92,9 @@ const eventListeners = {
     if (this.mapObject && bounds) {
       this.mapObject.fitBounds
     }
+  },
+  'resize-map' () {
+    google.maps.event.trigger(this.mapObject, 'resize');
   }
 }
 
