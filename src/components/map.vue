@@ -59,7 +59,16 @@ const events = [
   'resize',
   'tilesloaded',
   'bounds_changed'
-]
+];
+
+const callableMethods = [
+  'panBy',
+  'panTo',
+  'panToBounds',
+  'fitBounds'
+];
+
+const methods = {};
 
 const registerChild = function (child, type) {
     this.mapCreated.then((map) => {
@@ -68,6 +77,33 @@ const registerChild = function (child, type) {
       throw error;
     });
 }
+
+const eventListeners = {
+  'register-marker': registerChild,
+  'register-cluster': registerChild,
+  'register-infoWindow': registerChild,
+  'register-polyline': registerChild,
+  'register-circle': registerChild,
+  'register-rectangle': registerChild,
+  'g-bounds_changed' () {
+    this.bounds=this.mapObject.getBounds();
+  },
+  'g-fitBounds' (bounds) {
+    if (this.mapObject && bounds) {
+      this.mapObject.fitBounds
+    }
+  }
+}
+
+_.each(callableMethods, function (methodName) {
+   const applier= function() {
+    if(this.mapObject) {
+      this.mapObject[methodName].apply(this.mapObject, arguments);
+    }
+  }
+  eventListeners['g-' + methodName] = applier;
+  methods[methodName] = applier;
+});
 
 export default {
   props: props,
@@ -101,24 +137,17 @@ export default {
       // update the bounds
       this.$emit('g-bounds_changed');
 
-      // The map is now created
-      this.mapCreatedDefered.resolve(this.mapObject);
+      // wait before google maps has loaded the map to avoid bug with info windows
+      this.$once('g-bounds_changed', () => {
+        // The map is now created
+        this.mapCreatedDefered.resolve(this.mapObject);
+      });
     }, (error) => {
       throw error;
     });
   },
-
-  events: {
-    'register-marker': registerChild,
-    'register-cluster': registerChild,
-    'register-infoWindow': registerChild,
-    'register-polyline': registerChild,
-    'register-circle': registerChild,
-    'register-rectangle': registerChild,
-    'g-bounds_changed' () {
-      this.bounds=this.mapObject.getBounds();
-    }
-  }
+  events: eventListeners,
+  methods: methods
 }
 </script>
 

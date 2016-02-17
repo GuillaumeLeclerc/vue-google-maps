@@ -6,14 +6,14 @@
 
 ## Presentation
 
-If you want to write write google map this way : 
+If you want to write google map this way : 
 
 ```html
 <map
   :center="{lat:10, lng:10}"
   :map-type-id="terrain"
   :zoom="7"
-></map
+></map>
 ```
 
 Or use the power of Vue.js within a google map like this:
@@ -36,7 +36,7 @@ Or use the power of Vue.js within a google map like this:
 <script>
   import {load, Map, Marker} from 'vue-google-maps'
   
-  load('YOUR_API_TOKEN')
+  load('YOUR_API_TOKEN','OPTIONAL VERSION NUMBER')
   
   export default {
     data () {
@@ -82,6 +82,14 @@ If you are using a cool bundler (recommended) you can just do :
 ```javascript
 import {load, Map, Marker} from 'vue-google-maps'
 ```
+
+if your project already contain `vue` itself. It is recommended you include this way:
+
+```javascript
+import {load, Map, Marker} from 'node_modules/vue-google-maps/src/index.js'
+```
+
+This way you will not use the bundled version of `vue-google-maps`. If you don't do it this way your project will contain `vue` two times, which will increase the size of your application.
 
 or 
 

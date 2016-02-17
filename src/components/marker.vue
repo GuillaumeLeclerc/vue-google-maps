@@ -1,9 +1,5 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
-<template>
-  <div></div>
-</template>
-
 <script>
 
 import _ from 'lodash';
@@ -64,8 +60,8 @@ const props = {
     twoWay: true
   },
   visible: {
-    type: Boolean,
-    twoWay: true
+    twoWay: true,
+    default: 'auto'
   }
 }
 
@@ -94,7 +90,9 @@ export default {
   },
 
   attached() {
-    this.visible = true;
+    if (this.visible === 'auto') {
+      this.visible = true;
+    }
   },
 
   ready () {
@@ -102,10 +100,12 @@ export default {
   },
 
   detached() {
-    this.visible = false;
+    if (this.visible === 'auto') {
+      this.visible = false;
+    }
   },
 
-  beforeDestroy() {
+  destroyed() {
     this.destroyed = true;
     if (this.registrar === 'map' && this.markerObject) {
       this.markerObject.setMap(null);
