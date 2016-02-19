@@ -83,6 +83,7 @@ const eventListeners = {
   'register-cluster': registerChild,
   'register-infoWindow': registerChild,
   'register-polyline': registerChild,
+  'register-polygon': registerChild,
   'register-circle': registerChild,
   'register-rectangle': registerChild,
   'g-bounds_changed' () {
