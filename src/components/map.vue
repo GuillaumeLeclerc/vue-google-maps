@@ -93,8 +93,10 @@ const eventListeners = {
       this.mapObject.fitBounds
     }
   },
-  'resize-map' () {
+  'g-resize-map' () {
+    var center = this.mapObject.getCenter();
     google.maps.event.trigger(this.mapObject, 'resize');
+    this.mapObject.setCenter(center);
   }
 }
 
@@ -115,7 +117,6 @@ export default {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
   },
-
   ready () {
     loaded.then(() => {
       // getting the DOM element where to create the map
