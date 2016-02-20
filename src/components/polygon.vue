@@ -101,7 +101,7 @@ export default {
           google.maps.event.removeListener(id);
         });
         eventCancelers.length = 0;
-        this.polygonObject.setPath(this.path);
+        this.polygonObject.setPaths(this.path);
         setupBind();
       }, {
         deep: true
