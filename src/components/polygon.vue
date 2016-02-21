@@ -81,7 +81,7 @@ export default {
 
        
       const editHandler = () => {
-        this.path = _.map(this.polygonObject.getPath().getArray(), (v) => {
+        this.path = _.map(this.polygonObject.getPaths().getArray(), (v) => {
           return {
             lat: v.lat(),
             lng: v.lng()
@@ -90,7 +90,7 @@ export default {
       }
 
       const setupBind = () => {
-        const mvcoPath = this.polygonObject.getPath();
+        const mvcoPath = this.polygonObject.getPaths();
         eventCancelers.push(mvcoPath.addListener('insert_at', editHandler));
         eventCancelers.push(mvcoPath.addListener('remove_at', editHandler));
         eventCancelers.push(mvcoPath.addListener('set_at', editHandler));
