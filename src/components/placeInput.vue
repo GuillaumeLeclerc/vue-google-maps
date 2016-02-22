@@ -1,6 +1,8 @@
 <template>
-    <label for="vueGoogleMapsPlaceInput_{{ id }}" v-if="label">{{ label }}</label>
-    <input id="vueGoogleMapsPlaceInput_{{ id }}" type="text" v-el:input :placeholder="placeholder" :class="class"/>
+    <label>
+        {{ label }}
+        <input type="text" v-el:input :placeholder="placeholder" :class="class"/>
+    </label>
 </template>
 
 <script>
@@ -45,13 +47,6 @@
           required: false,
           type: String,
           default: null
-      },
-      id: {
-          required: false,
-          type: String,
-          default: function() {
-              return Math.random().toString(36).substr(4, 4);
-          }
       }
   }
 
