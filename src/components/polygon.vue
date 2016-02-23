@@ -76,7 +76,6 @@ export default {
       if (!options.paths) {
         delete options.paths;
       }
-      console.log(options);
       this.polygonObject = new google.maps.Polygon(options);
 
       this.polygonObject.setMap(this.mapObject);
@@ -84,6 +83,7 @@ export default {
       const localProps = _.clone(props);
       //we don't want the propBinder to handle this one because it is specific
       delete localProps.path;
+      delete localProps.paths;
 
       propsBinder(this, this.polygonObject, localProps);
       eventBinder(this, this.polygonObject, events);
@@ -102,7 +102,6 @@ export default {
       let stable = 0;
 
       const editHandler = () => {
-        console.log('startEdit');
         stable -= 2;
         if (stable < 0) {
           this.path = convertToLatLng(this.polygonObject.getPath().getArray());
@@ -110,12 +109,10 @@ export default {
             return convertToLatLng(pArray.getArray());
           });
         }
-        console.log('end edit');
       }
 
 
       const setupBind = () => {
-        console.log('start bind');
         const mvcoPaths = this.polygonObject.getPaths();
         eventCancelers.push(mvcoPaths.addListener('insert_at', editHandler));
         eventCancelers.push(mvcoPaths.addListener('remove_at', editHandler));
@@ -125,27 +122,32 @@ export default {
           eventCancelers.push(mvcoPath.addListener('remove_at', editHandler));
           eventCancelers.push(mvcoPath.addListener('set_at', editHandler));
         });
-        console.log('end bind');
+      }
+
+      const setPath = (paths) => {
+        // TODO Optimize this to avoid resetting events
+        _.each(eventCancelers, (id) => {
+          google.maps.event.removeListener(id);
+        });
+        eventCancelers.length = 0;
+        this.polygonObject.setPaths(paths);
+        setupBind();
       }
 
       this.$watch('paths', () => {
-        console.log('watch paths');
         stable++;
         if (stable > -1) {
-          this.polygonObject.setPaths(this.paths);
+          setPath(this.paths);
         }
-        console.log('end paths');
       }, {
         deep: true
       });
 
       this.$watch('path', () => {
-        console.log('watch path');
         stable++;
         if (stable > -1) {
-          this.polygonObject.setPaths([this.path]);
+          setPath([this.path]);
         }
-        console.log('end path');
       }, {
         deep: true
       });
