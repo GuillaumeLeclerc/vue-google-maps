@@ -22,6 +22,10 @@ const props = {
     type: Array,
     twoWay: true
   },
+  paths: {
+    type: Array,
+    twoWay: true
+  },
 }
 
 const events = [
@@ -66,6 +70,13 @@ export default {
       const options = _.clone(this.$data);
       delete options.options;
       _.assign(options, this.options);
+      if (!options.path) {
+        delete options.path;
+      }
+      if (!options.paths) {
+        delete options.paths;
+      }
+      console.log(options);
       this.polygonObject = new google.maps.Polygon(options);
 
       this.polygonObject.setMap(this.mapObject);
@@ -79,9 +90,8 @@ export default {
 
       const eventCancelers = [];
 
-       
-      const editHandler = () => {
-        this.path = _.map(this.polygonObject.getPath().getArray(), (v) => {
+      const convertToLatLng = (arr) => {
+        return _.map((arr), (v) => {
           return {
             lat: v.lat(),
             lng: v.lng()
@@ -89,20 +99,53 @@ export default {
         });
       }
 
-      const setupBind = () => {
-        const mvcoPath = this.polygonObject.getPath();
-        eventCancelers.push(mvcoPath.addListener('insert_at', editHandler));
-        eventCancelers.push(mvcoPath.addListener('remove_at', editHandler));
-        eventCancelers.push(mvcoPath.addListener('set_at', editHandler));
+      let stable = 0;
+
+      const editHandler = () => {
+        console.log('startEdit');
+        stable -= 2;
+        if (stable < 0) {
+          this.path = convertToLatLng(this.polygonObject.getPath().getArray());
+          this.paths = _.map(this.polygonObject.getPaths().getArray(), (pArray) => {
+            return convertToLatLng(pArray.getArray());
+          });
+        }
+        console.log('end edit');
       }
 
-      this.$watch('path', () => {
-        _.each(eventCancelers, (id) => {
-          google.maps.event.removeListener(id);
+
+      const setupBind = () => {
+        console.log('start bind');
+        const mvcoPaths = this.polygonObject.getPaths();
+        eventCancelers.push(mvcoPaths.addListener('insert_at', editHandler));
+        eventCancelers.push(mvcoPaths.addListener('remove_at', editHandler));
+        eventCancelers.push(mvcoPaths.addListener('set_at', editHandler));
+        _.each(mvcoPaths.getArray(), (mvcoPath) => {
+          eventCancelers.push(mvcoPath.addListener('insert_at', editHandler));
+          eventCancelers.push(mvcoPath.addListener('remove_at', editHandler));
+          eventCancelers.push(mvcoPath.addListener('set_at', editHandler));
         });
-        eventCancelers.length = 0;
-        this.polygonObject.setPath(this.path);
-        setupBind();
+        console.log('end bind');
+      }
+
+      this.$watch('paths', () => {
+        console.log('watch paths');
+        stable++;
+        if (stable > -1) {
+          this.polygonObject.setPaths(this.paths);
+        }
+        console.log('end paths');
+      }, {
+        deep: true
+      });
+
+      this.$watch('path', () => {
+        console.log('watch path');
+        stable++;
+        if (stable > -1) {
+          this.polygonObject.setPaths([this.path]);
+        }
+        console.log('end path');
       }, {
         deep: true
       });
