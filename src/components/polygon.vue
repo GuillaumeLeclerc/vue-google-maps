@@ -20,7 +20,13 @@ const props = {
   },
   path: {
     type: Array,
-    twoWay: true
+    twoWay: true,
+    default () {return []}
+  },
+  paths: {
+    type: Array,
+    twoWay: true,
+    default () {return []}
   },
 }
 
@@ -73,6 +79,7 @@ export default {
       const localProps = _.clone(props);
       //we don't want the propBinder to handle this one because it is specific
       delete localProps.path;
+      delete localProps.paths;
 
       propsBinder(this, this.polygonObject, localProps);
       eventBinder(this, this.polygonObject, events);
@@ -81,7 +88,7 @@ export default {
 
        
       const editHandler = () => {
-        this.path = _.map(this.polygonObject.getPaths().getArray(), (v) => {
+        this.path = this.paths = _.map(this.polygonObject.getPaths().getArray(), (v) => {
           return {
             lat: v.lat(),
             lng: v.lng()
@@ -101,7 +108,18 @@ export default {
           google.maps.event.removeListener(id);
         });
         eventCancelers.length = 0;
-        this.polygonObject.setPaths(this.path);
+        this.polygonObject.setPath(this.path);
+        setupBind();
+      }, {
+        deep: true
+      });
+      
+      this.$watch('paths', () => {
+        _.each(eventCancelers, (id) => {
+          google.maps.event.removeListener(id);
+        });
+        eventCancelers.length = 0;
+        this.polygonObject.setPaths(this.paths);
         setupBind();
       }, {
         deep: true
