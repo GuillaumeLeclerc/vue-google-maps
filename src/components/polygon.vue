@@ -21,11 +21,13 @@ const props = {
   path: {
     type: Array,
     twoWay: true,
+    required: false,
     default () {return []}
   },
   paths: {
     type: Array,
     twoWay: true,
+    required: false,
     default () {return []}
   },
 }
