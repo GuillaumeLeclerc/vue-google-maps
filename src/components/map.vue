@@ -79,12 +79,7 @@ const registerChild = function (child, type) {
 }
 
 const eventListeners = {
-  'register-marker': registerChild,
-  'register-cluster': registerChild,
-  'register-infoWindow': registerChild,
-  'register-polyline': registerChild,
-  'register-circle': registerChild,
-  'register-rectangle': registerChild,
+  'register-component': registerChild,
   'g-bounds_changed' () {
     this.bounds=this.mapObject.getBounds();
   },

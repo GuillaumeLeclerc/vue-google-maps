@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
+import MapComponent from './mapComponent';
 
 const props = {
     center: {
@@ -51,28 +52,33 @@ const events = [
     'rightclick'
 ]
 
-export default {
+export default MapComponent.extend({
     props: props,
     version: 2,
 
     ready () {
         this.destroyed = false;
-        this.$dispatch('register-circle', this);
+        this.$mapPromise.then((map) => {
+            const options = _.clone(this.$data);
+            options.map = this.$map;
+            delete options.bounds;
+            this.createCircle(options, this.$map);
+        });
     },
 
     methods: {
         createCircle (options, map) {
             if (!this.destroyed) {
-                this.circleObject = new google.maps.Circle(options);
+                this.$circleObject = new google.maps.Circle(options);
                 // we cant bind bounds because there is no `setBounds` method
                 // on the Circle object
                 const boundProps = _.clone(props);
                 delete boundProps.bounds;
-                propsBinder(this, this.circleObject, boundProps);
-                eventBinder(this, this.circleObject, events);
+                propsBinder(this, this.$circleObject, boundProps);
+                eventBinder(this, this.$circleObject, events);
 
                 const updateBounds = () => {
-                    this.bounds = this.circleObject.getBounds();
+                    this.bounds = this.$circleObject.getBounds();
                 }
 
                 this.$watch('radius', updateBounds);
@@ -86,22 +92,11 @@ export default {
 
     destroyed () {
       this.destroyed = true;
-      if (this.circleObject) {
-        this.circleObject.setMap(null);
+      if (this.$circleObject) {
+        this.$circleObject.setMap(null);
       }
     },
-
-    events: {
-        'map-ready' (map) {
-            this.registrar = 'map';
-            this.mapObject = map;
-            const options = _.clone(this.$data);
-            options.map = this.mapObject;
-            delete options.bounds;
-            this.createCircle(options, map);
-        }
-    }
-}
+})
 
 
 </script>
