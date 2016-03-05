@@ -1,14 +1,10 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 var webpack = require('webpack');
+var path = require('path')
+var _ = require('lodash')
 
-module.exports = {
+var baseConfig = {
   entry: './src/main.js',
-  output: {
-	path: './',
-        filename: "index.js",
-        library: ["VueGoogleMap"],
-        libraryTarget: "umd"
-  },
   module: {
     loaders: [
       {
@@ -25,7 +21,7 @@ module.exports = {
         test: /\.(png|jpg|gif)$/,
         loader: 'file?name=[name].[ext]?[hash]'
       }
-    ]
+    ],
   },
   // example: if you wish to apply custom babel options
   // instead of using vue-loader's default:
@@ -33,7 +29,50 @@ module.exports = {
     presets: ['es2015', 'stage-0'],
     plugins: ['transform-runtime']
   }
-}
+}; /* baseConfig */
+
+/**
+ * Web config uses a global Vue and Lodash object.
+ * */
+var webConfig = _.clone(baseConfig);
+webConfig.resolve = {
+    alias: {
+      'vue': path.resolve('./src/stubs/vue'),
+      'lodash': path.resolve('./src/stubs/lodash'),
+    },
+};
+webConfig.output = {
+	path: './dist',
+    filename: "vue-google-maps.js",
+    library: ["VueGoogleMap"],
+    libraryTarget: "umd"
+};
+/**
+ *  npm config allows vue-google-maps to be distributed
+ *  as an npm package without double-requiring vue
+ * */
+var npmConfig = _.clone(baseConfig);
+npmConfig.resolve = {
+    alias: {
+      'vue': path.resolve('./src/stubs-dist/vue'),
+      'lodash': path.resolve('./src/stubs-dist/lodash'),
+    },
+};
+npmConfig.module.noParse = [
+    /src\/stubs-dist/
+];
+npmConfig.output = {
+	path: './',
+    filename: "index.js",
+    library: ["VueGoogleMap"],
+    libraryTarget: "umd"
+};
+
+module.exports = [
+    webConfig,
+    npmConfig,
+];
+
 
 if (process.env.NODE_ENV === 'production') {
   console.log('THIS IS PROD');
