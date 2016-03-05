@@ -8,10 +8,12 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "js-marker-clusterer": "github:googlemaps/js-marker-clusterer#gh-pages",
+    "js-marker-clusterer": "github:googlemaps/js-marker-clusterer#gh-pages"
+  },
+  "peerDependencies": {
+    "vue": "^1.0.0",
     "lodash": "^3.10.1",
-    "q": "^1.4.1",
-    "vue": "^1.0.0"
+    "q": "^1.4.1"
   },
   "devDependencies": {
     "babel-core": "^6.1.2",
