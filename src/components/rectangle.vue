@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
+import MapComponent from './mapComponent';
 
 const props = {
     bounds: {
@@ -40,23 +41,27 @@ const events = [
     'rightclick'
 ]
 
-export default {
+export default MapComponent.extend({
     props: props,
 
     ready () {
         this.destroyed = false;
-        this.$dispatch('register-rectangle', this);
+        this.$mapPromise.then((map) => {
+            const options = _.clone(this.$data);
+            options.map = this.$map;
+            this.createRectangle(options, map);
+        });
     },
 
     methods: {
         createRectangle (options, map) {
             if (this.destroyed) return;
-            this.rectangleObject = new google.maps.Rectangle(options);
-            propsBinder(this, this.rectangleObject, props);
-            eventBinder(this, this.rectangleObject, events);
+            this.$rectangleObject = new google.maps.Rectangle(options);
+            propsBinder(this, this.$rectangleObject, props);
+            eventBinder(this, this.$rectangleObject, events);
 
             const updateBounds = () => {
-                this.bounds = this.rectangleObject.getBounds();
+                this.bounds = this.$rectangleObject.getBounds();
             }
 
             this.$watch('bounds_changed', updateBounds, {deep: true});
@@ -65,22 +70,12 @@ export default {
     },
              
     destroyed () {
-        if (this.rectangleObject) {
-          this.rectangleObject.setMap(null);
+        if (this.$rectangleObject) {
+          this.$rectangleObject.setMap(null);
         }
         this.destroyed = true;
     },
-
-    events: {
-        'map-ready' (map) {
-            this.registrar = 'map';
-            this.mapObject = map;
-            const options = _.clone(this.$data);
-            options.map = this.mapObject;
-            this.createRectangle(options, map);
-        }
-    }
-}
+})
 
 
 </script>
