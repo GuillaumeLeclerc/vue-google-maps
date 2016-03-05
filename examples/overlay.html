@@ -1,0 +1,78 @@
+<body>
+<div style="width: 100%; height: 500px">
+<google-map
+        :center="{lat: 1.38, lng: 103.8}"
+        :zoom="12"
+>
+  <ground-overlay
+    source="http://localhost:9999/examples/overlay.png"
+    :bounds="{
+        north: 1.502,
+        south: 1.185,
+        east: 104.0262,
+        west: 103.5998,
+    }"
+    :opacity="0.5"
+  >
+  </ground-overlay>
+</google-map>
+</div>
+
+<button onclick="localStorage.apiKey = prompt('ApiKey'); window.location.reload()">
+Reset API Key
+</button>
+
+<script>
+
+console.log(localStorage.apiKey);
+if (!localStorage.apiKey) {
+    var apiKey = prompt("Paste API Key here")
+    localStorage.apiKey = apiKey;
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.16/vue.min.js"></script>
+<script src="../index.js"></script>
+
+<script>
+
+VueGoogleMap.load({
+    key: localStorage['apiKey'],
+    v: '3.24',
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    Vue.component('google-map', VueGoogleMap.Map);
+    Vue.component('ground-overlay', VueGoogleMap.MapComponent.extend({
+        template: '',
+        props: ['source', 'bounds', 'opacity'],
+        ready: function() {
+            var self = this;
+
+            this.$mapPromise.then(function (map) {
+                console.log(self.source);
+                console.log(self.bounds);
+                self.$overlay = new google.maps.GroundOverlay(
+                    self.source,
+                    self.bounds
+                    );
+                self.$overlay.setOpacity(self.opacity);
+                self.$overlay.setMap(map);
+            });
+        },
+        destroyed: function() {
+            this.$overlay.setMap(null);
+        },
+    }));
+
+    new Vue({
+        el: 'body',
+        data: {
+            place: '',
+        },
+    });
+});
+
+</script>
+
+</body>
