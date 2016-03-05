@@ -6,6 +6,8 @@ import _ from 'lodash';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
 import Q from 'q';
+import MapComponent from './mapComponent';
+import assert from 'assert';
 
 const props = {
   animation: {
@@ -80,23 +82,25 @@ const events = [
 
 var container;
 
-export default {
+/**
+ * @class Marker
+ * 
+ * Marker class with extra support for
+ *
+ * - Embedded info windows
+ * - Clustered markers
+ *
+ * Support for clustered markers is for backward-compatability
+ * reasons. Otherwise we should use a cluster-marker mixin or
+ * subclass.
+ */
+export default MapComponent.extend({
   props: props,
-
-  data() {
-    this.mapAvailableDefered = new Q.defer();
-    this.mapAvailable = this.mapAvailableDefered.promise;
-    this.destroyed = false;
-  },
 
   attached() {
     if (this.visible === 'auto') {
       this.visible = true;
     }
-  },
-
-  ready () {
-    this.$dispatch('register-marker', this);
   },
 
   detached() {
@@ -107,46 +111,59 @@ export default {
 
   destroyed() {
     this.destroyed = true;
-    if (this.registrar === 'map' && this.markerObject) {
-      this.markerObject.setMap(null);
-    } else if (this.markerObject) {
-      this.clusterObject.removeMarker(this.markerObject);
+    if (!this.$markerObject)
+        return;
+
+    if (this.$clusterObject) {
+      this.$clusterObject.removeMarker(this.$markerObject);
     }
+    else {
+      this.$markerObject.setMap(null);
+    }
+  },
+
+  ready() {
+
+    /* Send an event to any <cluster> parent */
+    this.$dispatch('register-marker', this);
+
+    /*
+        This promise will be left hanging if
+        the marker is resolved by cluster instead.
+    */
+    this.$mapPromise.then((map) => {
+      const options = _.clone(this.$data);
+      options.map = map;
+      this.createMarker(options, map);
+    });
   },
 
   methods: {
     createMarker (options, map) {
       if (!this.destroyed) {
-        this.markerObject = new google.maps.Marker(options);
-        propsBinder(this, this.markerObject, props);
-        eventsBinder(this, this.markerObject, events);
+        this.$markerObject = new google.maps.Marker(options);
+        propsBinder(this, this.$markerObject, props);
+        eventsBinder(this, this.$markerObject, events);
         this.mapAvailableDefered.resolve(map);
       }
     }
   },
 
   events: {
-    'map-ready' (map) {
-      this.registrar = 'map';
-      this.mapObject = map;
-      const options = _.clone(this.$data);
-      options.map = this.mapObject;
-      this.createMarker(options, map);
+    'register-infoWindow' (infoWindow) {
+      this.$mapPromise.then((map) => {
+        infoWindow.$emit('marker-ready', this, map);
+      });
     },
 
     'cluster-ready' (cluster, map) {
-      this.registrar = 'cluster';
-      this.clusterObject = cluster;
-      const options = _.clone(this.$data);
-      this.createMarker(options, map);
-      cluster.addMarker(this.markerObject);
+      assert(this.$markerObject);
+
+      this.$clusterObject = cluster;
+      cluster.addMarker(this.$markerObject);
     },
 
-    'register-infoWindow' (infoWindow) {
-      this.mapAvailable.then((map) => {
-        infoWindow.$emit('marker-ready', this, map);
-      });
-    }
   }
-}
+})
+
 </script>

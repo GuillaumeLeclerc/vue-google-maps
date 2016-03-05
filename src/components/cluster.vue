@@ -9,6 +9,7 @@
 import Q from 'q';
 import _ from 'lodash';
 import propsBinder from '../utils/propsBinder.js'
+import MapComponent from './mapComponent';
 require('js-marker-clusterer');
 
 const props = {
@@ -30,11 +31,9 @@ const props = {
   }
 };
 
-export default {
+export default MapComponent.extend({
   props: props,
   data () {
-    this.mapReadyDefered = new Q.defer();
-    this.mapReady = this.mapReadyDefered.promise;
     this.clusterReadyDefered = new Q.defer();
     this.clusterReady = this.clusterReadyDefered.promise;
     return {
@@ -44,7 +43,7 @@ export default {
 
   ready () {
     this.$dispatch('register-cluster', this);
-    this.mapReady.then((map) => {
+    this.$mapPromise.then((map) => {
       this.mapObject = map;
       const options = _.clone(this.$data);
       this.clusterObject = new MarkerClusterer(this.mapObject, [], options);
@@ -65,14 +64,11 @@ export default {
   },
 
   events: {
-    'map-ready' (map) {
-      this.mapReadyDefered.resolve(map);
-    },
     'register-marker' (element) {
       this.clusterReady.then((cluster) => {
         element.$emit('cluster-ready', cluster, this.mapObject);
       });
     }
   }
-}
+})
 </script>

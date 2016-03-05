@@ -7,3 +7,8 @@ export Polyline from './components/polyline.vue'
 export Circle from './components/circle.vue'
 export Rectangle from './components/rectangle.vue'
 export PlaceInput from './components/placeInput.vue'
+
+
+// HERE IS MAIN
+var vv = require('vue');
+//
