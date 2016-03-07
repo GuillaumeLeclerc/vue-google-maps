@@ -83,6 +83,7 @@ const eventListeners = {
   'register-cluster': registerChild,
   'register-infoWindow': registerChild,
   'register-polyline': registerChild,
+  'register-polygon': registerChild,
   'register-circle': registerChild,
   'register-rectangle': registerChild,
   'g-bounds_changed' () {
@@ -92,6 +93,11 @@ const eventListeners = {
     if (this.mapObject && bounds) {
       this.mapObject.fitBounds
     }
+  },
+  'g-resize-map' () {
+    var center = this.mapObject.getCenter();
+    google.maps.event.trigger(this.mapObject, 'resize');
+    this.mapObject.setCenter(center);
   }
 }
 
@@ -112,7 +118,6 @@ export default {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
   },
-
   ready () {
     loaded.then(() => {
       // getting the DOM element where to create the map

@@ -1,5 +1,8 @@
 <template>
-  <input type="text" v-el:input :placeholder="placeholder"/>
+    <label>
+        {{ label }}
+        <input type="text" v-el:input :placeholder="placeholder" :class="class"/>
+    </label>
 </template>
 
 <script>
@@ -35,6 +38,15 @@
       placeholder: {
         required: false,
         type: String
+      },
+      class: {
+          required: false,
+          type: String
+      },
+      label: {
+          required: false,
+          type: String,
+          default: null
       }
   }
 

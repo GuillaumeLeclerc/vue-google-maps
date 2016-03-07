@@ -34,7 +34,6 @@ const props = {
     twoWay: true
   },
   label: {
-    type: Object
   },
   opacity: {
     type: Number,
