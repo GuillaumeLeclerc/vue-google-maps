@@ -77,19 +77,21 @@ module.exports = [
 
 if (process.env.NODE_ENV === 'production') {
   console.log('THIS IS PROD');
-  module.exports.plugins = [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.optimize.OccurenceOrderPlugin()
-  ]
+  for (var i=0; i<module.exports.length; i++) {
+      module.exports[i].plugins = [
+        new webpack.DefinePlugin({
+          'process.env': {
+            NODE_ENV: '"production"'
+          }
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+          compress: {
+            warnings: false
+          }
+        }),
+        new webpack.optimize.OccurenceOrderPlugin()
+      ]
+  }
 } else {
   module.exports.devtool = '#source-map'
 }
