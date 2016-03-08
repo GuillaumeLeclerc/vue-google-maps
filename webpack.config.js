@@ -56,6 +56,7 @@ npmConfig.resolve = {
     alias: {
       'vue': path.resolve('./src/stubs-dist/vue'),
       'lodash': path.resolve('./src/stubs-dist/lodash'),
+      'q': path.resolve('./src/stubs-dist/q'),
     },
 };
 npmConfig.module.noParse = [
@@ -76,19 +77,21 @@ module.exports = [
 
 if (process.env.NODE_ENV === 'production') {
   console.log('THIS IS PROD');
-  module.exports.plugins = [
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.optimize.OccurenceOrderPlugin()
-  ]
+  for (var i=0; i<module.exports.length; i++) {
+      module.exports[i].plugins = [
+        new webpack.DefinePlugin({
+          'process.env': {
+            NODE_ENV: '"production"'
+          }
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+          compress: {
+            warnings: false
+          }
+        }),
+        new webpack.optimize.OccurenceOrderPlugin()
+      ]
+  }
 } else {
   module.exports.devtool = '#source-map'
 }
