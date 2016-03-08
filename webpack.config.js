@@ -56,6 +56,7 @@ npmConfig.resolve = {
     alias: {
       'vue': path.resolve('./src/stubs-dist/vue'),
       'lodash': path.resolve('./src/stubs-dist/lodash'),
+      'q': path.resolve('./src/stubs-dist/q'),
     },
 };
 npmConfig.module.noParse = [
