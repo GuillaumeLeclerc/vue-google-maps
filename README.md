@@ -83,31 +83,65 @@ If you are using a cool bundler (recommended) you can just do :
 import {load, Map, Marker} from 'vue-google-maps'
 ```
 
-if your project already contain `vue` itself. It is recommended you include this way:
-
-```javascript
-import {load, Map, Marker} from 'node_modules/vue-google-maps/src/index.js'
-```
-
-This way you will not use the bundled version of `vue-google-maps`. If you don't do it this way your project will contain `vue` two times, which will increase the size of your application.
-
-or 
+Or if you prefer the older ES5 syntax:
 
 ```javascript
 const VueGoogleMap = require('vue-google-maps')
 ```
 
-If you are not using any bundler (and you should feel bad). You can just reference the file in a script tag. The library will be available in a global object called `VueGoogleMap`
+#### Standalone / CDN
+
+If you are not using any bundler (and you should feel bad). You can just reference the file in a script tag.
+The library will be available in a global object called `VueGoogleMap`.
+However you will need to include Vue and Lodash beforehand:
+
+```html
+<head>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.17/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.min.js"></script>
+<script src="dist/vue-google-maps.js"></script>
+
+</head>
+<body>
+
+<google-map style="width: 100%; height: 100%; position: absolute; left:0; top:0"
+    :center="{lat: 1.38, lng: 103.8}"
+    :zoom="12"
+>
+
+</google-map>
+
+<script>
+VueGoogleMap.load({
+    'key': 'YOUR_API_KEY',
+})
+Vue.component('google-map', VueGoogleMap.Map);
+new Vue({
+    el: 'body',
+});
+
+</script>
+
+</body>
+```
 
 #### Set your api key
 
 To enable any `vue-google-maps` components you need to set your api token:
 
 ```javascript
-load('YOUR_API_TOKEN')
+load({
+  key: 'YOUR_API_TOKEN',
+  v: '3.24',                // Google Maps API version
+  // libraries: 'places',   // If you want to use places input
+})
 // OR (depending on how you refereced it)
-VueGoogleMap.load('YOUR_API_TOKEN')
+VueGoogleMap.load({ ... })
 ```
+
+The parameters are passed in the query string to the Google Maps API, e.g. to set the [version](https://developers.google.com/maps/documentation/javascript/versions#version-rollover-and-version-types),
+[libraries](https://developers.google.com/maps/documentation/javascript/libraries),
+or for [localisation](https://developers.google.com/maps/documentation/javascript/basics).
 
 ## Full documentation
 
@@ -116,8 +150,6 @@ VueGoogleMap.load('YOUR_API_TOKEN')
 __All events are prefixed with `g-`. Example : `g-click` so it does not interfere with DOM events.__
 
 __Documentation is up to date__: take a look at the wiki
-
-
 
 ## Sponsor
 
