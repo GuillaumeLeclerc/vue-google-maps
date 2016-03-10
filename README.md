@@ -25,10 +25,10 @@ Or use the power of Vue.js within a google map like this:
   >
     <marker 
       v-for="m in markers"
-      :position.sync="m.center"
+      :position.sync="m.position"
       :clickable="true"
       :draggable="true"
-      @g-click="center=m.center"
+      @g-click="center=m.position"
     ></marker>
   </map>
 </template>
