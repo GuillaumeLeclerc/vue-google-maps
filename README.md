@@ -153,4 +153,4 @@ __Documentation is up to date__: take a look at the wiki
 
 ## Sponsor
 
-This component is sponsored by [Home Global group](http://homeglobal.ch/).
+This component is sponsored by [PapayaPods](http://en.papayapods.com). Feel free to check out `vue-google-maps` in production !!
