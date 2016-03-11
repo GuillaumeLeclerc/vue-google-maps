@@ -2,7 +2,9 @@
 
 ## Demo:
 
-[Available here](http://guillaumeleclerc.github.io/vue-google-maps-example/)
+[Demo in production](http://en.papayapods.com/#/search/map)
+
+[Showcase with a lot of features](http://guillaumeleclerc.github.io/vue-google-maps-example/)
 
 ## Presentation
 
