@@ -25,7 +25,7 @@ const props = {
     twoWay: false
   },
   styles: {
-    type: Object,
+    type: Array,
     twoWay: false
   }
 };
