@@ -2,7 +2,7 @@
 
 ## Demo:
 
-[Demo in production](http://en.papayapods.com/#!/search/map?city=Lausanne)
+[Demo in production](http://en.papayapods.com/?utm_source=GtHub&utm_medium=LnK&utm_campaign=V.JS%20Map%20Cmpnt.#!/search/map?city=Lausanne)
 
 [Showcase with a lot of features](http://guillaumeleclerc.github.io/vue-google-maps-example/)
 
