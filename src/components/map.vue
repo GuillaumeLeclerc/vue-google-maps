@@ -114,9 +114,11 @@ _.each(callableMethods, function (methodName) {
 export default {
   props: props,
   replace:false, // necessary for css styles
-  ready () {
+  data() {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
+  },
+  ready () {
     loaded.then(() => {
       // getting the DOM element where to create the map
       const element = this.$el.getElementsByClassName('vue-map')[0];
