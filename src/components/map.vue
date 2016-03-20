@@ -115,8 +115,11 @@ export default {
   props: props,
   replace:false, // necessary for css styles
   data() {
-    this.mapCreatedDefered = new Q.defer();
-    this.mapCreated = this.mapCreatedDefered.promise;
+    const defered = new Q.defer();
+    return {
+      mapCreatedDefered: defered,
+      mapCreated: defered.promise
+    };
   },
   ready () {
     loaded.then(() => {
