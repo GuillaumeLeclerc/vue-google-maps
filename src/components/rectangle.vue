@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 
 const props = {
     bounds: {
@@ -41,6 +42,7 @@ const events = [
 ]
 
 export default {
+    mixins: [getPropsValuesMixin],
     props: props,
 
     ready () {
@@ -75,7 +77,7 @@ export default {
         'map-ready' (map) {
             this.registrar = 'map';
             this.mapObject = map;
-            const options = _.clone(this.$data);
+            const options = _.clone(this.getPropsValues());
             options.map = this.mapObject;
             this.createRectangle(options, map);
         }

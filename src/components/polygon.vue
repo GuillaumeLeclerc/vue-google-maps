@@ -6,6 +6,7 @@ import _ from 'lodash';
 
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 
 const props = {
   draggable: {
@@ -43,6 +44,7 @@ const events = [
 ]
 
 export default {
+  mixins: [getPropsValuesMixin],
   props: props,
 
   ready () {
@@ -67,7 +69,7 @@ export default {
     'map-ready' (map) {
       if (this.destroyed) return;
       this.mapObject = map;
-      const options = _.clone(this.$data);
+      const options = _.clone(this.getPropsValues());
       delete options.options;
       _.assign(options, this.options);
       if (!options.path) {

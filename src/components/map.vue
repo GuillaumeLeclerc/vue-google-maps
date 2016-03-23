@@ -14,6 +14,7 @@ import _ from 'lodash';
 import {loaded} from '../manager.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
+import getPropsMixin from '../utils/getPropsValuesMixin.js'
 
 const props = {
   center: {
@@ -112,9 +113,10 @@ _.each(callableMethods, function (methodName) {
 });
 
 export default {
+  mixins: [getPropsMixin],
   props: props,
   replace:false, // necessary for css styles
-  data() {
+  created() {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
   },
@@ -124,7 +126,7 @@ export default {
       const element = this.$el.getElementsByClassName('vue-map')[0];
 
       // creating the map
-      const copiedData = _.clone(this.$data);
+      const copiedData = _.clone(this.getPropsValues());
       delete copiedData.options;
       const options = _.clone(this.options);
       _.assign(options, copiedData);
@@ -141,6 +143,9 @@ export default {
 
       // update the bounds
       this.$emit('g-bounds_changed');
+      console.log(this.$props);
+      console.log(this.props);
+      console.log(this._props);
 
       // wait before google maps has loaded the map to avoid bug with info windows
       this.$once('g-bounds_changed', () => {

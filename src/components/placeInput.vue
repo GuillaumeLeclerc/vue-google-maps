@@ -10,6 +10,7 @@
   import eventBinder from '../utils/eventsBinder.js'
   import propsBinder from '../utils/propsBinder.js'
   import downArrowSimulator from '../utils/simulateArrowDown.js'
+  import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
   import {loaded} from '../manager.js'
 
   const props = {
@@ -61,12 +62,13 @@
   ];
 
   export default {
+    mixins: [getPropsValuesMixin],
     ready () {
       const input = this.$els.input;
       input.value = this.place.name;
       loaded.then(() => {
         window.i = input;
-        const options = _.clone(this.$data);
+        const options = _.clone(this.getPropsValues());
         if (this.selectFirstOnEnter) {
           downArrowSimulator(this.$els.input);
         }

@@ -5,6 +5,7 @@
 import _ from 'lodash';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 import Q from 'q';
 
 const props = {
@@ -80,9 +81,10 @@ const events = [
 var container;
 
 export default {
+  mixins: [getPropsValuesMixin],
   props: props,
 
-  data() {
+  created() {
     this.mapAvailableDefered = new Q.defer();
     this.mapAvailable = this.mapAvailableDefered.promise;
     this.destroyed = false;
@@ -128,7 +130,7 @@ export default {
     'map-ready' (map) {
       this.registrar = 'map';
       this.mapObject = map;
-      const options = _.clone(this.$data);
+      const options = _.clone(this.getPropsValues());
       options.map = this.mapObject;
       this.createMarker(options, map);
     },
@@ -136,7 +138,7 @@ export default {
     'cluster-ready' (cluster, map) {
       this.registrar = 'cluster';
       this.clusterObject = cluster;
-      const options = _.clone(this.$data);
+      const options = _.clone(this.getPropsValues());
       this.createMarker(options, map);
       cluster.addMarker(this.markerObject);
     },
