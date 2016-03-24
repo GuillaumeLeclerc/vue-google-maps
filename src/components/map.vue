@@ -143,9 +143,6 @@ export default {
 
       // update the bounds
       this.$emit('g-bounds_changed');
-      console.log(this.$props);
-      console.log(this.props);
-      console.log(this._props);
 
       // wait before google maps has loaded the map to avoid bug with info windows
       this.$once('g-bounds_changed', () => {
