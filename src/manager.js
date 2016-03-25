@@ -19,7 +19,9 @@ window['vueGoogleMapsInit'] = () => {
  *                  this parameter and skip the next two parameters
  * @param version   Google for Maps version
  * @param libraries Libraries to load (@see 
- *      https://developers.google.com/maps/documentation/javascript/libraries)
+ *                  https://developers.google.com/maps/documentation/javascript/libraries)
+ * @param loadCn    Boolean. If set to true, the map will be loaded form goole maps China
+ *                  (@see https://developers.google.com/maps/documentation/javascript/basics#GoogleMapsChina)
  *
  * Example:
  * ```
@@ -74,7 +76,7 @@ export const load = (apiKey, version, libraries, loadCn) => {
     }
     
     let baseUrl = 'https://maps.googleapis.com/';
-    
+
     if (typeof loadCn == 'boolean' && loadCn === true) {
       baseUrl = 'http://maps.google.cn/';
     } 
