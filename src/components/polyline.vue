@@ -7,7 +7,7 @@ import _ from 'lodash';
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
 import MapComponent from './mapComponent';
-
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 
 const props = {
   draggable: {
@@ -41,15 +41,29 @@ const events = [
 ]
 
 export default MapComponent.extend({
+  mixins: [getPropsValuesMixin],
   props: props,
-
+  
   ready () {
     this.destroyed = false;
   },
 
+  attached () {
+    if (this.$map && this.$polyLineObject.getMap() === null) {
+      this.$polyLineObject.setMap(this.$map);
+    }
+  },
+
+  destroyed () {
+    this.destroyed = true;
+    if (this.$polyLineObject) {
+      this.$polyLineObject.setMap(null);
+    }
+  },
+  
   deferredReady() {
     if (this.destroyed) return;
-    const options = _.clone(this.$data);
+    const options = _.clone(this.getPropsValues());
     delete options.options;
     _.assign(options, this.options);
     this.$polyLineObject = new google.maps.Polyline(options);
@@ -64,6 +78,7 @@ export default MapComponent.extend({
     eventBinder(this, this.$polyLineObject, events);
 
     const eventCancelers = [];
+
      
     const editHandler = () => {
       this.path = _.map(this.$polyLineObject.getPath().getArray(), (v) => {
@@ -98,18 +113,6 @@ export default MapComponent.extend({
     this.$polyLineObject.setMap(this.$map);
   },
 
-  attached () {
-    if (this.$map && this.$polyLineObject.getMap() === null) {
-      this.$polyLineObject.setMap(this.$map);
-    }
-  },
-
-  destroyed () {
-    this.destroyed = true;
-    if (this.$polyLineObject) {
-      this.$polyLineObject.setMap(null);
-    }
-  },
 })
 
 

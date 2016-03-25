@@ -5,6 +5,7 @@
 import _ from 'lodash';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 import Q from 'q';
 import MapComponent from './mapComponent';
 import assert from 'assert';
@@ -94,7 +95,12 @@ var container;
  * subclass.
  */
 export default MapComponent.extend({
+  mixins: [getPropsValuesMixin],
   props: props,
+
+  created() {
+    this.destroyed = false;
+  },
 
   attached() {
     if (this.visible === 'auto') {

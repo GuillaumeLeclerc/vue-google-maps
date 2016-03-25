@@ -10,6 +10,7 @@ import Q from 'q';
 import _ from 'lodash';
 import propsBinder from '../utils/propsBinder.js'
 import MapComponent from './mapComponent';
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 require('js-marker-clusterer');
 
 const props = {
@@ -26,16 +27,17 @@ const props = {
     twoWay: false
   },
   styles: {
-    type: Object,
+    type: Array,
     twoWay: false
   }
 };
 
 export default MapComponent.extend({
+  mixins: [getPropsValuesMixin],
   props: props,
 
   deferredReady () {
-    const options = _.mapValues(props, (value, prop) => this[prop]);
+    const options = _.clone(this.getPropsValues());
     this.$clusterObject = new MarkerClusterer(this.$map, [], options);
 
     propsBinder(this, this.$clusterObject, props, {

@@ -7,6 +7,7 @@ import _ from 'lodash';
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
 import MapComponent from './mapComponent'
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 
 const props = {
   draggable: {
@@ -44,14 +45,29 @@ const events = [
 ]
 
 export default MapComponent.extend({
+  mixins: [getPropsValuesMixin],
   props: props,
 
   ready () {
     this.destroyed = false;
   },
+
+  attached () {
+    if (this.$map && this.$polygonObject.getMap() === null) {
+      this.$polygonObject.setMap(this.$map);
+    }
+  },
+
+  destroyed () {
+    this.destroyed = true;
+    if (this.$polygonObject) {
+      this.$polygonObject.setMap(null);
+    }
+  },
+
   deferredReady() {
     if (this.destroyed) return;
-    const options = _.clone(this.$data);
+    const options = _.clone(this.getPropsValues());
     delete options.options;
     _.assign(options, this.options);
     if (!options.path) {
@@ -61,8 +77,6 @@ export default MapComponent.extend({
       delete options.paths;
     }
     this.$polygonObject = new google.maps.Polygon(options);
-
-    this.$polygonObject.setMap(this.$map);
 
     const localProps = _.clone(props);
     //we don't want the propBinder to handle this one because it is specific
@@ -142,18 +156,6 @@ export default MapComponent.extend({
     this.$polygonObject.setMap(this.$map);
   },
 
-  attached () {
-    if (this.$map && this.$polygonObject.getMap() === null) {
-      this.$polygonObject.setMap(this.$map);
-    }
-  },
-
-  destroyed () {
-    this.destroyed = true;
-    if (this.$polygonObject) {
-      this.$polygonObject.setMap(null);
-    }
-  },
 })
 
 

@@ -7,6 +7,7 @@ import _ from 'lodash';
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
 import MapComponent from './mapComponent';
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 
 const props = {
     center: {
@@ -53,6 +54,7 @@ const events = [
 ]
 
 export default MapComponent.extend({
+    mixins: [getPropsValuesMixin],
     props: props,
     version: 2,
 
@@ -61,7 +63,7 @@ export default MapComponent.extend({
     },
 
     deferredReady() {
-        const options = _.clone(this.$data);
+        const options = _.clone(this.getPropsValues());
         options.map = this.$map;
         delete options.bounds;
         this.createCircle(options, this.$map);

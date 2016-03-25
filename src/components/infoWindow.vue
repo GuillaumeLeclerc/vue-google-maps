@@ -104,9 +104,16 @@ export default MapComponent.extend({
     createInfoWindow(map) {
       if (this.destroyed) return;
 
+      var el = document.createElement('div');
+      el.innerHTML = this.content;
+
+      google.maps.event.addDomListener(el, 'click', (ev) => {
+        this.$emit('g-click', ev);
+      });
+
       // setting options
       const options = _.clone(this.options);
-      options.content = this.content;
+      options.content = el;
       // only set the position if the info window is not bound to a marker
       if (this.$markerObject === null) {
         options.position = this.position;

@@ -2,7 +2,9 @@
 
 ## Demo:
 
-[Available here](http://guillaumeleclerc.github.io/vue-google-maps-example/)
+[Demo in production](http://en.papayapods.com/?utm_source=GtHub&utm_medium=LnK&utm_campaign=V.JS%20Map%20Cmpnt.#!/search/map?city=Lausanne)
+
+[Showcase with a lot of features](http://guillaumeleclerc.github.io/vue-google-maps-example/)
 
 ## Presentation
 
@@ -25,10 +27,10 @@ Or use the power of Vue.js within a google map like this:
   >
     <marker 
       v-for="m in markers"
-      :position.sync="m.center"
+      :position.sync="m.position"
       :clickable="true"
       :draggable="true"
-      @g-click="center=m.center"
+      @g-click="center=m.position"
     ></marker>
   </map>
 </template>
@@ -153,4 +155,4 @@ __Documentation is up to date__: take a look at the wiki
 
 ## Sponsor
 
-This component is sponsored by [Home Global group](http://homeglobal.ch/).
+This component is sponsored by [PapayaPods](http://en.papayapods.com). Feel free to check out `vue-google-maps` in production !!

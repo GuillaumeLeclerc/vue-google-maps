@@ -17,6 +17,7 @@ import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
 import Vue from 'vue'
 import {DeferredReady} from '../deferredReady.js'
+import getPropsMixin from '../utils/getPropsValuesMixin.js'
 
 Vue.use(DeferredReady);
 
@@ -116,13 +117,13 @@ _.each(callableMethods, function (methodName) {
 });
 
 export default {
+  mixins: [getPropsMixin, DeferredReadyMixin],
   props: props,
   replace:false, // necessary for css styles
   created() {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
   },
-  mixins: [DeferredReadyMixin],
 
   ready() {
   },
@@ -133,7 +134,7 @@ export default {
       const element = this.$el.getElementsByClassName('vue-map')[0];
 
       // creating the map
-      const copiedData = _.mapValues(props, (value, prop) => this[prop]);
+      const copiedData = _.clone(this.getPropsValues());
       delete copiedData.options;
       const options = _.clone(this.options);
       _.assign(options, copiedData);
