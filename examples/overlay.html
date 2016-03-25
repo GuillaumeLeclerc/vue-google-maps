@@ -5,7 +5,7 @@
         :zoom="12"
 >
   <ground-overlay
-    source="http://localhost:9999/examples/overlay.png"
+    source="./overlay.png"
     :bounds="{
         north: 1.502,
         south: 1.185,
@@ -32,7 +32,8 @@ if (!localStorage.apiKey) {
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.16/vue.min.js"></script>
-<script src="../index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.js"></script>
+<script src="../dist/vue-google-maps.js"></script>
 
 <script>
 
@@ -46,19 +47,15 @@ document.addEventListener('DOMContentLoaded', function() {
     Vue.component('ground-overlay', VueGoogleMap.MapComponent.extend({
         template: '',
         props: ['source', 'bounds', 'opacity'],
-        ready: function() {
-            var self = this;
-
-            this.$mapPromise.then(function (map) {
-                console.log(self.source);
-                console.log(self.bounds);
-                self.$overlay = new google.maps.GroundOverlay(
-                    self.source,
-                    self.bounds
-                    );
-                self.$overlay.setOpacity(self.opacity);
-                self.$overlay.setMap(map);
-            });
+        deferredReady: function() {
+            console.log(this.source);
+            console.log(this.bounds);
+            this.$overlay = new google.maps.GroundOverlay(
+                this.source,
+                this.bounds
+                );
+            this.$overlay.setOpacity(this.opacity);
+            this.$overlay.setMap(this.$map);
         },
         destroyed: function() {
             this.$overlay.setMap(null);
