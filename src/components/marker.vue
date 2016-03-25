@@ -121,47 +121,42 @@ export default MapComponent.extend({
     }
   },
 
-  ready() {
+  created() {
+    this.destroyed = false;
+  },
 
+  deferredReady() {
     /* Send an event to any <cluster> parent */
     this.$dispatch('register-marker', this);
 
-    /*
-        This promise will be left hanging if
-        the marker is resolved by cluster instead.
-    */
-    this.$mapPromise.then((map) => {
-      const options = _.clone(this.$data);
-      options.map = map;
-      this.createMarker(options, map);
-    });
+    const options = _.mapValues(props, (value, prop) => this[prop]);
+    options.map = this.$map;
+    this.createMarker(options, this.$map);
   },
 
   methods: {
     createMarker (options, map) {
+      // FIXME: @Guillaumne do we need this?
       if (!this.destroyed) {
         this.$markerObject = new google.maps.Marker(options);
         propsBinder(this, this.$markerObject, props);
         eventsBinder(this, this.$markerObject, events);
-        this.mapAvailableDefered.resolve(map);
+
+        if (this.$clusterObject) {
+          this.$clusterObject.addMarker(this.$markerObject);
+        }
       }
     }
   },
 
   events: {
     'register-infoWindow' (infoWindow) {
-      this.$mapPromise.then((map) => {
-        infoWindow.$emit('marker-ready', this, map);
-      });
+      infoWindow.$emit('marker-ready', this, this.$map);
     },
 
     'cluster-ready' (cluster, map) {
-      assert(this.$markerObject);
-
       this.$clusterObject = cluster;
-      cluster.addMarker(this.$markerObject);
     },
-
   }
 })
 

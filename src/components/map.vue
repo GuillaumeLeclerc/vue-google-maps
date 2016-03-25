@@ -12,8 +12,13 @@ import Q from 'q';
 import _ from 'lodash';
 
 import {loaded} from '../manager.js';
+import {DeferredReadyMixin} from '../deferredReady.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
+import Vue from 'vue'
+import {DeferredReady} from '../deferredReady.js'
+
+Vue.use(DeferredReady);
 
 const props = {
   center: {
@@ -70,12 +75,17 @@ const callableMethods = [
 
 const methods = {};
 
+/**
+  Implementation note: this signal should only be
+  called after the map has been initialized
+
+**/
 const registerChild = function (child, type) {
-    this.mapCreated.then((map) => {
-      child.$emit('map-ready', map);
-    }, (error) => {
-      throw error;
-    });
+  if (!this.mapObject)
+    throw new Error("Map not initialized");
+  child.$emit('map-ready', this.mapObject);
+  // Simpler: child.$map = mapObject but not so
+  // modular
 }
 
 const eventListeners = {
@@ -108,17 +118,22 @@ _.each(callableMethods, function (methodName) {
 export default {
   props: props,
   replace:false, // necessary for css styles
-  data() {
+  created() {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
   },
-  ready () {
-    loaded.then(() => {
+  mixins: [DeferredReadyMixin],
+
+  ready() {
+  },
+
+  deferredReady() {
+    return loaded.then(() => {
       // getting the DOM element where to create the map
       const element = this.$el.getElementsByClassName('vue-map')[0];
 
       // creating the map
-      const copiedData = _.clone(this.$data);
+      const copiedData = _.mapValues(props, (value, prop) => this[prop]);
       delete copiedData.options;
       const options = _.clone(this.options);
       _.assign(options, copiedData);

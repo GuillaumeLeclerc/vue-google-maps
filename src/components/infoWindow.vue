@@ -53,6 +53,11 @@ const events = [
 export default MapComponent.extend({
   replace: false,
   props: props,
+  
+  created() {
+    this.$markerObject = null;
+  },
+
   ready () {
     this.destroyed = false;
 
@@ -66,13 +71,11 @@ export default MapComponent.extend({
       innerChanged();
       this.disconnect = mutationObserver(this.$el, innerChanged);
     } 
+  },
 
+  deferredReady() {
     this.$dispatch('register-infoWindow', this);
-    this.$markerObject = null;
-
-    this.$mapPromise.then((map) => {
-      this.createInfoWindow(map);
-    });
+    this.createInfoWindow(this.$map);
   },
 
   destroyed () {
@@ -100,7 +103,6 @@ export default MapComponent.extend({
 
     createInfoWindow(map) {
       if (this.destroyed) return;
-      this.$map = map;
 
       // setting options
       const options = _.clone(this.options);
@@ -135,7 +137,6 @@ export default MapComponent.extend({
   events: {
     'marker-ready' (marker, map) {
       this.$markerObject = marker.$markerObject;
-      // this.createInfoWindow(map);
       marker.$on('g-click', () => {
         this.opened = !this.opened;
       });

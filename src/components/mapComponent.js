@@ -2,6 +2,10 @@
 
 import Vue from 'vue';
 import Q from 'q';
+import {DeferredReadyMixin} from '../deferredReady'
+import {DeferredReady} from '../deferredReady.js'
+
+Vue.use(DeferredReady);
 
 /**
  * @class MapComponent
@@ -14,22 +18,20 @@ import Q from 'q';
  *
  * */
 export default Vue.extend({
+
+  mixins: [DeferredReadyMixin],
     
   created() {
-    this.$mapDeferred = new Q.defer();
-    this.$mapPromise = this.$mapDeferred.promise;
     this.$map = null;
   },
 
-  ready () {
+  deferredReady () {
     this.$dispatch('register-component', this);
   },
 
   events: {
     'map-ready' (map) {
       this.$map = map;
-      this.$mapDeferred.resolve(map);
-      return true; /* Allow descendents to receive the map-ready event */
     },
   },
 

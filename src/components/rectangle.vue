@@ -46,11 +46,11 @@ export default MapComponent.extend({
 
     ready () {
         this.destroyed = false;
-        this.$mapPromise.then((map) => {
-            const options = _.clone(this.$data);
-            options.map = this.$map;
-            this.createRectangle(options, map);
-        });
+    },
+    deferredReady() {
+        const options = _.clone(this.$data);
+        options.map = this.$map;
+        this.createRectangle(options, this.$map);
     },
 
     methods: {

@@ -58,12 +58,13 @@ export default MapComponent.extend({
 
     ready () {
         this.destroyed = false;
-        this.$mapPromise.then((map) => {
-            const options = _.clone(this.$data);
-            options.map = this.$map;
-            delete options.bounds;
-            this.createCircle(options, this.$map);
-        });
+    },
+
+    deferredReady() {
+        const options = _.clone(this.$data);
+        options.map = this.$map;
+        delete options.bounds;
+        this.createCircle(options, this.$map);
     },
 
     methods: {

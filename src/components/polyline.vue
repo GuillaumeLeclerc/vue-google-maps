@@ -45,56 +45,57 @@ export default MapComponent.extend({
 
   ready () {
     this.destroyed = false;
-    this.$mapPromise.then((map) => {
-      if (this.destroyed) return;
-      const options = _.clone(this.$data);
-      delete options.options;
-      _.assign(options, this.options);
-      this.$polyLineObject = new google.maps.Polyline(options);
+  },
 
-      this.$polyLineObject.setMap(map);
+  deferredReady() {
+    if (this.destroyed) return;
+    const options = _.clone(this.$data);
+    delete options.options;
+    _.assign(options, this.options);
+    this.$polyLineObject = new google.maps.Polyline(options);
 
-      const localProps = _.clone(props);
-      //we don't want the propBinder to handle this one because it is specific
-      delete localProps.path;
+    this.$polyLineObject.setMap(this.$map);
 
-      propsBinder(this, this.$polyLineObject, localProps);
-      eventBinder(this, this.$polyLineObject, events);
+    const localProps = _.clone(props);
+    //we don't want the propBinder to handle this one because it is specific
+    delete localProps.path;
 
-      const eventCancelers = [];
-       
-      const editHandler = () => {
-        this.path = _.map(this.$polyLineObject.getPath().getArray(), (v) => {
-          return {
-            lat: v.lat(),
-            lng: v.lng()
-          }
-        });
-      }
+    propsBinder(this, this.$polyLineObject, localProps);
+    eventBinder(this, this.$polyLineObject, events);
 
-      const setupBind = () => {
-        const mvcoPath = this.$polyLineObject.getPath();
-        eventCancelers.push(mvcoPath.addListener('insert_at', editHandler));
-        eventCancelers.push(mvcoPath.addListener('remove_at', editHandler));
-        eventCancelers.push(mvcoPath.addListener('set_at', editHandler));
-      }
-
-      this.$watch('path', () => {
-        _.each(eventCancelers, (id) => {
-          google.maps.event.removeListener(id);
-        });
-        eventCancelers.length = 0;
-        this.$polyLineObject.setPath(this.path);
-        setupBind();
-      }, {
-        deep: true
+    const eventCancelers = [];
+     
+    const editHandler = () => {
+      this.path = _.map(this.$polyLineObject.getPath().getArray(), (v) => {
+        return {
+          lat: v.lat(),
+          lng: v.lng()
+        }
       });
+    }
 
+    const setupBind = () => {
+      const mvcoPath = this.$polyLineObject.getPath();
+      eventCancelers.push(mvcoPath.addListener('insert_at', editHandler));
+      eventCancelers.push(mvcoPath.addListener('remove_at', editHandler));
+      eventCancelers.push(mvcoPath.addListener('set_at', editHandler));
+    }
+
+    this.$watch('path', () => {
+      _.each(eventCancelers, (id) => {
+        google.maps.event.removeListener(id);
+      });
+      eventCancelers.length = 0;
+      this.$polyLineObject.setPath(this.path);
       setupBind();
-
-      // Display the map
-      this.$polyLineObject.setMap(this.$map);
+    }, {
+      deep: true
     });
+
+    setupBind();
+
+    // Display the map
+    this.$polyLineObject.setMap(this.$map);
   },
 
   attached () {

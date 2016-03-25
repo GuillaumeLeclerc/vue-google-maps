@@ -33,41 +33,27 @@ const props = {
 
 export default MapComponent.extend({
   props: props,
-  data () {
-    this.clusterReadyDefered = new Q.defer();
-    this.clusterReady = this.clusterReadyDefered.promise;
-    return {
-      clusterObject: null,
-    }
-  },
 
-  ready () {
-    this.$dispatch('register-cluster', this);
-    this.$mapPromise.then((map) => {
-      this.mapObject = map;
-      const options = _.clone(this.$data);
-      this.clusterObject = new MarkerClusterer(this.mapObject, [], options);
+  deferredReady () {
+    const options = _.mapValues(props, (value, prop) => this[prop]);
+    this.$clusterObject = new MarkerClusterer(this.$map, [], options);
 
-      this.clusterReadyDefered.resolve(this.clusterObject);
-      propsBinder(this, this.clusterObject, props, {
-        afterModelChanged: (a, v) => {
-          const oldMarkers = this.clusterObject.getMarkers();
-          this.clusterObject.clearMarkers();
-          this.clusterObject.addMarkers(oldMarkers);
-        }
-      });
+    propsBinder(this, this.$clusterObject, props, {
+      afterModelChanged: (a, v) => {
+        const oldMarkers = this.$clusterObject.getMarkers();
+        this.$clusterObject.clearMarkers();
+        this.$clusterObject.addMarkers(oldMarkers);
+      }
     });
   },
 
   detached() {
-    this.clusterObject.clearMarkers();
+    this.$clusterObject.clearMarkers();
   },
 
   events: {
     'register-marker' (element) {
-      this.clusterReady.then((cluster) => {
-        element.$emit('cluster-ready', cluster, this.mapObject);
-      });
+      element.$emit('cluster-ready', this.$clusterObject, this.$map);
     }
   }
 })
