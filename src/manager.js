@@ -37,7 +37,7 @@ window['vueGoogleMapsInit'] = () => {
  *      })
  * ```
  */
-export const load = (apiKey, version, libraries) => {
+export const load = (apiKey, version, libraries, loadCn) => {
   if (!setUp) {
     const googleMapScript = document.createElement('SCRIPT');
 
@@ -72,8 +72,14 @@ export const load = (apiKey, version, libraries) => {
     if (version) {
       url = url + '&v=' + version;
     }
+    
+    let baseUrl = 'https://maps.googleapis.com/';
+    
+    if (typeof loadCn == 'boolean' && loadCn === true) {
+      baseUrl = 'http://maps.google.cn/';
+    } 
 
-    let url = 'https://maps.googleapis.com/maps/api/js?' + 
+    let url = baseUrl + 'maps/api/js?' + 
       Object.keys(options)
         .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(options[key]))
         .join('&');
