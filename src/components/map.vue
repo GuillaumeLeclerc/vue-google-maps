@@ -59,7 +59,8 @@ const events = [
   'idle',
   'resize',
   'tilesloaded',
-  'bounds_changed'
+  'bounds_changed',
+  'zoom_changed'
 ];
 
 const callableMethods = [
