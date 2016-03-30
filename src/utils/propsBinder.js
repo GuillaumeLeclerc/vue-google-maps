@@ -1,6 +1,7 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
-import _ from 'lodash'
+import forEach from 'lodash/forEach'
+import throttle from 'lodash/throttle'
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -9,7 +10,7 @@ function capitalizeFirstLetter(string) {
 export default (vueElement, googleMapsElement, props, options) => {
   options = options || {};
   var {afterModelChanged : afterModelChanged} = options;
-  _.forEach(props, ({twoWay: twoWay, type:type}, attribute) => {
+  forEach(props, ({twoWay: twoWay, type:type}, attribute) => {
     const setMethodName = 'set' + capitalizeFirstLetter(attribute);
     const getMethodName = 'get' + capitalizeFirstLetter(attribute);
     const eventName = attribute.toLowerCase() + '_changed';
@@ -58,7 +59,7 @@ export default (vueElement, googleMapsElement, props, options) => {
       });
 
       googleMapsElement.addListener(eventName,
-        _.throttle(gmapWatcher, 100, {
+        throttle(gmapWatcher, 100, {
           leading: true,
           trailing: true
         }));

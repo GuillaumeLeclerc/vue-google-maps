@@ -2,7 +2,7 @@
 
 <script>
 
-import _ from 'lodash';
+import clone from 'lodash/clone';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
 import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
@@ -130,7 +130,7 @@ export default {
     'map-ready' (map) {
       this.registrar = 'map';
       this.mapObject = map;
-      const options = _.clone(this.getPropsValues());
+      const options = clone(this.getPropsValues());
       options.map = this.mapObject;
       this.createMarker(options, map);
     },
@@ -138,7 +138,7 @@ export default {
     'cluster-ready' (cluster, map) {
       this.registrar = 'cluster';
       this.clusterObject = cluster;
-      const options = _.clone(this.getPropsValues());
+      const options = clone(this.getPropsValues());
       this.createMarker(options, map);
       cluster.addMarker(this.markerObject);
     },

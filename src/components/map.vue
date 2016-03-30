@@ -9,7 +9,9 @@
 
 <script>
 import Q from 'q';
-import _ from 'lodash';
+import each from 'lodash/each';
+import clone from 'lodash/clone';
+import assign from 'lodash/assign';
 
 import {loaded} from '../manager.js';
 import eventsBinder from '../utils/eventsBinder.js';
@@ -102,7 +104,7 @@ const eventListeners = {
   }
 }
 
-_.each(callableMethods, function (methodName) {
+each(callableMethods, function (methodName) {
    const applier= function() {
     if(this.mapObject) {
       this.mapObject[methodName].apply(this.mapObject, arguments);
@@ -126,14 +128,14 @@ export default {
       const element = this.$el.getElementsByClassName('vue-map')[0];
 
       // creating the map
-      const copiedData = _.clone(this.getPropsValues());
+      const copiedData = clone(this.getPropsValues());
       delete copiedData.options;
-      const options = _.clone(this.options);
-      _.assign(options, copiedData);
+      const options = clone(this.options);
+      assign(options, copiedData);
       this.mapObject = new google.maps.Map(element, options);
 
       // we con't want to bind props because it's a kind of "computed" property
-      const boundProps = _.clone(props);
+      const boundProps = clone(props);
       delete boundProps.bounds;
       //binding properties (two and one way)
       propsBinder(this, this.mapObject, boundProps);

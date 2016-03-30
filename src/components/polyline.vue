@@ -2,7 +2,10 @@
 
 <script>
 
-import _ from 'lodash';
+import assign from 'lodash/assign';
+import clone from 'lodash/clone';
+import map from 'lodash/map';
+import each from 'lodash/each';
 
 import eventBinder from '../utils/eventsBinder.js'
 import propsBinder from '../utils/propsBinder.js'
@@ -65,14 +68,14 @@ export default {
     'map-ready' (map) {
       if (this.destroyed) return;
       this.mapObject = map;
-      const options = _.clone(this.getPropsValues());
+      const options = clone(this.getPropsValues());
       delete options.options;
-      _.assign(options, this.options);
+      assign(options, this.options);
       this.polyLineObject = new google.maps.Polyline(options);
 
       this.polyLineObject.setMap(this.mapObject);
 
-      const localProps = _.clone(props);
+      const localProps = clone(props);
       //we don't want the propBinder to handle this one because it is specific
       delete localProps.path;
 
@@ -83,7 +86,7 @@ export default {
 
        
       const editHandler = () => {
-        this.path = _.map(this.polyLineObject.getPath().getArray(), (v) => {
+        this.path = map(this.polyLineObject.getPath().getArray(), (v) => {
           return {
             lat: v.lat(),
             lng: v.lng()
@@ -99,7 +102,7 @@ export default {
       }
 
       this.$watch('path', () => {
-        _.each(eventCancelers, (id) => {
+        each(eventCancelers, (id) => {
           google.maps.event.removeListener(id);
         });
         eventCancelers.length = 0;

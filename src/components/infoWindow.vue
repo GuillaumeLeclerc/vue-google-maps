@@ -10,7 +10,7 @@
 
 <script>
 
-import _ from 'lodash'
+import clone from 'lodash/clone'
 import propsBinder from '../utils/propsBinder.js'
 import eventsBinder from '../utils/eventsBinder.js'
 import mutationObserver from '../utils/mutationObserver.js'
