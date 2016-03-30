@@ -8,3 +8,5 @@ export Polygon from './components/polygon.vue'
 export Circle from './components/circle.vue'
 export Rectangle from './components/rectangle.vue'
 export PlaceInput from './components/placeInput.vue'
+
+export MapComponent from './components/mapComponent'

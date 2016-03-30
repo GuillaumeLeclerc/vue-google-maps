@@ -12,9 +12,14 @@ import Q from 'q';
 import _ from 'lodash';
 
 import {loaded} from '../manager.js';
+import {DeferredReadyMixin} from '../deferredReady.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
+import Vue from 'vue'
+import {DeferredReady} from '../deferredReady.js'
 import getPropsMixin from '../utils/getPropsValuesMixin.js'
+
+Vue.use(DeferredReady);
 
 const props = {
   center: {
@@ -71,22 +76,21 @@ const callableMethods = [
 
 const methods = {};
 
+/**
+  Implementation note: this signal should only be
+  called after the map has been initialized
+
+**/
 const registerChild = function (child, type) {
-    this.mapCreated.then((map) => {
-      child.$emit('map-ready', map);
-    }, (error) => {
-      throw error;
-    });
+  if (!this.mapObject)
+    throw new Error("Map not initialized");
+  child.$emit('map-ready', this.mapObject);
+  // Simpler: child.$map = mapObject but not so
+  // modular
 }
 
 const eventListeners = {
-  'register-marker': registerChild,
-  'register-cluster': registerChild,
-  'register-infoWindow': registerChild,
-  'register-polyline': registerChild,
-  'register-polygon': registerChild,
-  'register-circle': registerChild,
-  'register-rectangle': registerChild,
+  'register-component': registerChild,
   'g-bounds_changed' () {
     this.bounds=this.mapObject.getBounds();
   },
@@ -113,15 +117,19 @@ _.each(callableMethods, function (methodName) {
 });
 
 export default {
-  mixins: [getPropsMixin],
+  mixins: [getPropsMixin, DeferredReadyMixin],
   props: props,
   replace:false, // necessary for css styles
   created() {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
   },
-  ready () {
-    loaded.then(() => {
+
+  ready() {
+  },
+
+  deferredReady() {
+    return loaded.then(() => {
       // getting the DOM element where to create the map
       const element = this.$el.getElementsByClassName('vue-map')[0];
 

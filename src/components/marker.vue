@@ -7,6 +7,8 @@ import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
 import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
 import Q from 'q';
+import MapComponent from './mapComponent';
+import assert from 'assert';
 
 const props = {
   animation: {
@@ -80,13 +82,23 @@ const events = [
 
 var container;
 
-export default {
+/**
+ * @class Marker
+ * 
+ * Marker class with extra support for
+ *
+ * - Embedded info windows
+ * - Clustered markers
+ *
+ * Support for clustered markers is for backward-compatability
+ * reasons. Otherwise we should use a cluster-marker mixin or
+ * subclass.
+ */
+export default MapComponent.extend({
   mixins: [getPropsValuesMixin],
   props: props,
 
   created() {
-    this.mapAvailableDefered = new Q.defer();
-    this.mapAvailable = this.mapAvailableDefered.promise;
     this.destroyed = false;
   },
 
@@ -94,10 +106,6 @@ export default {
     if (this.visible === 'auto') {
       this.visible = true;
     }
-  },
-
-  ready () {
-    this.$dispatch('register-marker', this);
   },
 
   detached() {
@@ -108,46 +116,54 @@ export default {
 
   destroyed() {
     this.destroyed = true;
-    if (this.registrar === 'map' && this.markerObject) {
-      this.markerObject.setMap(null);
-    } else if (this.markerObject) {
-      this.clusterObject.removeMarker(this.markerObject);
+    if (!this.$markerObject)
+        return;
+
+    if (this.$clusterObject) {
+      this.$clusterObject.removeMarker(this.$markerObject);
     }
+    else {
+      this.$markerObject.setMap(null);
+    }
+  },
+
+  created() {
+    this.destroyed = false;
+  },
+
+  deferredReady() {
+    /* Send an event to any <cluster> parent */
+    this.$dispatch('register-marker', this);
+
+    const options = _.mapValues(props, (value, prop) => this[prop]);
+    options.map = this.$map;
+    this.createMarker(options, this.$map);
   },
 
   methods: {
     createMarker (options, map) {
+      // FIXME: @Guillaumne do we need this?
       if (!this.destroyed) {
-        this.markerObject = new google.maps.Marker(options);
-        propsBinder(this, this.markerObject, props);
-        eventsBinder(this, this.markerObject, events);
-        this.mapAvailableDefered.resolve(map);
+        this.$markerObject = new google.maps.Marker(options);
+        propsBinder(this, this.$markerObject, props);
+        eventsBinder(this, this.$markerObject, events);
+
+        if (this.$clusterObject) {
+          this.$clusterObject.addMarker(this.$markerObject);
+        }
       }
     }
   },
 
   events: {
-    'map-ready' (map) {
-      this.registrar = 'map';
-      this.mapObject = map;
-      const options = _.clone(this.getPropsValues());
-      options.map = this.mapObject;
-      this.createMarker(options, map);
+    'register-infoWindow' (infoWindow) {
+      infoWindow.$emit('marker-ready', this, this.$map);
     },
 
     'cluster-ready' (cluster, map) {
-      this.registrar = 'cluster';
-      this.clusterObject = cluster;
-      const options = _.clone(this.getPropsValues());
-      this.createMarker(options, map);
-      cluster.addMarker(this.markerObject);
+      this.$clusterObject = cluster;
     },
-
-    'register-infoWindow' (infoWindow) {
-      this.mapAvailable.then((map) => {
-        infoWindow.$emit('marker-ready', this, map);
-      });
-    }
   }
-}
+})
+
 </script>
