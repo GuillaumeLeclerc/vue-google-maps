@@ -79,6 +79,10 @@
         delete propsToBind.place;
         delete propsToBind.selectFirstOnEnter;
         propsBinder(this, this.autoCompleter, propsToBind);
+      }).catch(() => {
+        setTimeout(() => {
+          throw new Error("Impossible to load the Autocomplete Class from the google places api, did you loaded it ?");
+        }, 0);
       });
     },
 
