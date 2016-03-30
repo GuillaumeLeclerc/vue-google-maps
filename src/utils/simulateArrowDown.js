@@ -1,6 +1,6 @@
 //This piece of code was orignally written by amirnissim and can be seen here
 //http://stackoverflow.com/a/11703018/2694653
-//
+//This has been ported to Vanilla.js by GuillaumeLeclerc
 export default (input) => {
   var _addEventListener = (input.addEventListener) ? input.addEventListener : input.attachEvent;
 
@@ -10,19 +10,16 @@ export default (input) => {
     if (type == "keydown") {
       var orig_listener = listener;
       listener = function(event) {
-        var suggestion_selected = $(".pac-item-selected").length > 0;
+        var suggestion_selected = document.getElementsByClassName('ac-item-selected').length > 0;
         if (event.which == 13 && !suggestion_selected) {
-          var simulated_downarrow = $.Event("keydown", {
-            keyCode: 40,
-            which: 40
-          });
-          orig_listener.apply(input, [simulated_downarrow]);
+          var simulatedEvent = document.createEvent('Event');
+          simulatedEvent.keyCode = 40;
+          simulatedEvent.which = 40;
+          orig_listener.apply(input, [simulatedEvent]);
         }
-
         orig_listener.apply(input, [event]);
       };
     }
-
     _addEventListener.apply(input, [type, listener]);
   }
 
