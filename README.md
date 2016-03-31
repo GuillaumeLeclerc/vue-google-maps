@@ -47,7 +47,7 @@ Or use the power of Vue.js within a google map like this:
         markers: [{
           position: {lat: 10.0, lng: 10.0}
         }, {
-          position: {lat: 11.0, 11.0}
+          position: {lat: 11.0, lng: 11.0}
         }]
       }
     }
