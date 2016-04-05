@@ -1,6 +1,6 @@
 <template>
     <label>
-        {{ label }}
+        <span v-text="label"></span>
         <input type="text" v-el:input :placeholder="placeholder" :class="class"/>
     </label>
 </template>
