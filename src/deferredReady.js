@@ -62,6 +62,9 @@ export var DeferredReady = {
 
 function runHooks(vm) {
   var hooks = vm.$options.deferredReady || [];
+  if (typeof hooks === 'function') {
+    hooks = [hooks]
+  }
   Promise.all(hooks.map(x => {
     var rv;
     try {
