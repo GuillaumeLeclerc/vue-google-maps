@@ -10,7 +10,7 @@ export default (input) => {
     if (type == "keydown") {
       var orig_listener = listener;
       listener = function(event) {
-        var suggestion_selected = document.getElementsByClassName('ac-item-selected').length > 0;
+        var suggestion_selected = document.getElementsByClassName('pac-item-selected').length > 0;
         if (event.which == 13 && !suggestion_selected) {
           var simulatedEvent = document.createEvent('Event');
           simulatedEvent.keyCode = 40;
