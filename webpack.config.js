@@ -37,7 +37,6 @@ var baseConfig = {
 var webConfig = _.clone(baseConfig);
 webConfig.resolve = {
     alias: {
-      'vue': path.resolve('./src/stubs/vue'),
       'lodash': path.resolve('./src/stubs/lodash'),
     },
 };
@@ -54,7 +53,6 @@ webConfig.output = {
 var npmConfig = _.clone(baseConfig);
 npmConfig.resolve = {
     alias: {
-      'vue': path.resolve('./src/stubs-dist/vue'),
       'lodash': path.resolve('./src/stubs-dist/lodash'),
       'q': path.resolve('./src/stubs-dist/q'),
     },

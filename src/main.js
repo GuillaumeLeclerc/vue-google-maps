@@ -1,4 +1,4 @@
-export {load, loaded} from './manager.js';
+export {loaded} from './manager.js';
 export Map from './components/map.vue';
 export Marker from './components/marker.vue';
 export Cluster from './components/cluster.vue'
@@ -8,3 +8,11 @@ export Polygon from './components/polygon.vue'
 export Circle from './components/circle.vue'
 export Rectangle from './components/rectangle.vue'
 export PlaceInput from './components/placeInput.vue'
+
+import {load} from './manager.js'
+
+export default {
+  install (Vue, options) {
+    load(options);
+  }
+}
