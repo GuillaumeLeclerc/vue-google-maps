@@ -8,6 +8,7 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "babel-plugin-lodash": "^2.3.0",
     "js-marker-clusterer": "github:googlemaps/js-marker-clusterer#gh-pages"
   },
   "peerDependencies": {

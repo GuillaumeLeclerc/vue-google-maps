@@ -27,7 +27,7 @@ var baseConfig = {
   // instead of using vue-loader's default:
   babel: {
     presets: ['es2015', 'stage-0'],
-    plugins: ['transform-runtime']
+    plugins: ['transform-runtime', 'lodash']
   }
 }; /* baseConfig */
 
@@ -35,11 +35,6 @@ var baseConfig = {
  * Web config uses a global Vue and Lodash object.
  * */
 var webConfig = _.clone(baseConfig);
-webConfig.resolve = {
-    alias: {
-      'lodash': path.resolve('./src/stubs/lodash'),
-    },
-};
 webConfig.output = {
 	path: './dist',
     filename: "vue-google-maps.js",
@@ -53,7 +48,6 @@ webConfig.output = {
 var npmConfig = _.clone(baseConfig);
 npmConfig.resolve = {
     alias: {
-      'lodash': path.resolve('./src/stubs-dist/lodash'),
       'q': path.resolve('./src/stubs-dist/q'),
     },
 };
