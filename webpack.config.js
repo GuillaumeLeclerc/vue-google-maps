@@ -31,29 +31,7 @@ var baseConfig = {
   }
 }; /* baseConfig */
 
-/**
- * Web config uses a global Vue and Lodash object.
- * */
-var webConfig = _.clone(baseConfig);
-webConfig.output = {
-	path: './dist',
-    filename: "vue-google-maps.js",
-    library: ["VueGoogleMap"],
-    libraryTarget: "umd"
-};
-/**
- *  npm config allows vue-google-maps to be distributed
- *  as an npm package without double-requiring vue
- * */
 var npmConfig = _.clone(baseConfig);
-npmConfig.resolve = {
-    alias: {
-      'q': path.resolve('./src/stubs-dist/q'),
-    },
-};
-npmConfig.module.noParse = [
-    /src\/stubs-dist/
-];
 npmConfig.output = {
 	path: './',
     filename: "index.js",
@@ -62,7 +40,6 @@ npmConfig.output = {
 };
 
 module.exports = [
-    webConfig,
     npmConfig,
 ];
 
