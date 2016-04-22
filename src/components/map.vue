@@ -15,11 +15,7 @@ import {loaded} from '../manager.js';
 import {DeferredReadyMixin} from '../deferredReady.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
-import Vue from 'vue'
-import {DeferredReady} from '../deferredReady.js'
 import getPropsMixin from '../utils/getPropsValuesMixin.js'
-
-Vue.use(DeferredReady);
 
 const props = {
   center: {
