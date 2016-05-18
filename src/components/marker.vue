@@ -127,10 +127,6 @@ export default MapComponent.extend({
     }
   },
 
-  created() {
-    this.destroyed = false;
-  },
-
   deferredReady() {
     /* Send an event to any <cluster> parent */
     this.$dispatch('register-marker', this);
