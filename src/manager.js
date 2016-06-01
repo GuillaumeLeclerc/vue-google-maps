@@ -70,10 +70,6 @@ export const load = (apiKey, version, libraries, loadCn) => {
       options.libraries = options.libraries.join(',');
     }
     options['callback'] = 'vueGoogleMapsInit';
-
-    if (version) {
-      url = url + '&v=' + version;
-    }
     
     let baseUrl = 'https://maps.googleapis.com/';
 
@@ -85,6 +81,10 @@ export const load = (apiKey, version, libraries, loadCn) => {
       Object.keys(options)
         .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(options[key]))
         .join('&');
+        
+    if (version) {
+      url = url + '&v=' + version;
+    }
 
     googleMapScript.setAttribute('src', url);
     googleMapScript.setAttribute('async', '');
