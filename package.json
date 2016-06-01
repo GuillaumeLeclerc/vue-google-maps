@@ -1,6 +1,6 @@
 {
   "name": "vue-google-maps",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "This is a google map component for Vue.js",
   "main": "index.js",
   "scripts": {
