@@ -35,7 +35,7 @@
       types: {
           type: Array,
           twoWay: false,
-          default: []
+          default: function() { return []; }
       },
       placeholder: {
         required: false,
