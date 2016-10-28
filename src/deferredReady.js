@@ -1,32 +1,32 @@
-import Q from 'q'
+import Q from "q";
 
 /**
  * 1. Create a DeferredReady plugin.
- * 
+ *
  * a. Updates options.configMergeStrategies to handle our new hook correctly (using Promise.all!)
- *     
+ *
  * 2. VueGoogleMaps uses a DeferredReady mixin.
- * 
+ *
  *     a. Each component checks for ancestors that are also DeferredReady (via dispatch/emit)
  *     b. If no, then run DeferredReady after ready.
  *     c. If yes, then run DeferredReady after parent's deferredReady.
- *     
- *     
+ *
+ *
  * Say we have the following inheritance:
- * 
+ *
  * --> == 'child of'
- * 
+ *
  * A --> B --> C
- * 
+ *
  * ready is called in the following order:
- * 
+ *
  * A.ready, B.ready, C.ready
- * 
+ *
  * C.ready -- no further ancestors supporting mixin, so in ready() we run+
- * 
+ *
  *     // I believe this executes synchronously.
- *     Vue.$dispatch('register-deferredReadyChild', this);
- * 
+ *     Vue.$emit('register-deferredReadyChild', this);
+ *
  *     if (!this.hasDeferredReadyAncestors) {
  *         (do we need nextTick?)
  *         Vue.nextTick(() => {
@@ -34,9 +34,9 @@ import Q from 'q'
  *             .then(() => this.deferredReadyDeferred.resolve());
  *         })
  *     }
- *     
+ *
  *     Event handler:
- *     
+ *
  *     'register-deferredReadyChild' (obj) {
  *         if (this == obj)
  *             return true;
@@ -48,10 +48,10 @@ import Q from 'q'
  *             .then(() => obj.deferredReadyDeferred.resolve())
  *         });
  *     }
- * 
- * B.ready -- parent C supports deferredReady. 
- *     
-   **/ 
+ *
+ * B.ready -- parent C supports deferredReady.
+ *
+ **/
 
 export var DeferredReady = {
   install(Vue, options) {
@@ -75,9 +75,9 @@ function runHooks(vm) {
     return rv;
   })) // execute all handlers, expecting them to return promises
   // wait for the promises to complete, before allowing child to execute
-  .then(() => {
+    .then(() => {
       vm.$deferredReadyDeferred.resolve()
-  });
+    });
 }
 
 export var DeferredReadyMixin = {
@@ -86,8 +86,8 @@ export var DeferredReadyMixin = {
     this.$deferredReadyDeferred = Q.defer();
   },
 
-  ready() {
-    this.$dispatch('register-deferredReadyChild', this);
+  mounted() {
+    this.$emit('register-deferredReadyChild', this);
 
     if (!this.$hasDeferredReadyAncestors) {
       // call deferredReady() hook only after ready() has completed
@@ -107,7 +107,7 @@ export var DeferredReadyMixin = {
       // after we are done running deferredReady()
       // children should run their deferredReady()
       this.$deferredReadyDeferred.promise
-      .then(() => runHooks(child));
+        .then(() => runHooks(child));
     },
   },
 };
