@@ -3,6 +3,7 @@
 <script>
 
 import _ from 'lodash';
+import eventHub from '../utils/eventHub';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
 import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
@@ -10,10 +11,10 @@ import Q from 'q';
 import MapComponent from './mapComponent';
 import assert from 'assert';
 
-const props = {
+const markerProps = {
   animation: {
-    twoWay: true,
-    type: Number
+    type: Number,
+    twoWay: true
   },
   attribution: {
     type: Object,
@@ -21,7 +22,6 @@ const props = {
   clickable: {
     type: Boolean,
     twoWay: true,
-  default: true
   },
   cursor: {
     type: String,
@@ -29,8 +29,7 @@ const props = {
   },
   draggable: {
     type: Boolean,
-    twoWay: true,
-  default: false
+    twoWay: true
   },
   icon: {
     type: Object,
@@ -39,8 +38,7 @@ const props = {
   label: {
   },
   opacity: {
-    type: Number,
-  default: 1
+    type: Number
   },
   place: {
     type: Object
@@ -62,8 +60,14 @@ const props = {
     twoWay: true
   },
   visible: {
-    twoWay: true,
-    default: 'auto'
+    twoWay: true
+  }
+}
+
+const props = {
+  markerObj: {
+    required: true,
+    type: Object,
   }
 }
 
@@ -95,27 +99,156 @@ var container;
  * subclass.
  */
 export default MapComponent.extend({
+  render(){return ''},
   mixins: [getPropsValuesMixin],
   props: props,
-
+  computed:{
+    animation: {
+      get(){
+        return this.markerObj.animation;
+      },
+      set(value){
+        this.markerObj.animation = value;
+      }
+    },
+    attribution: {
+      get(){
+        return this.markerObj.attribution;
+      },
+      set(value){
+        this.markerObj.attribution = value;
+      }
+    },
+    clickable: {
+      get(){
+        return this.markerObj.clickable;
+      },
+      set(value){
+        this.markerObj.clickable = value;
+      }
+    },
+    cursor: {
+      get(){
+        return this.markerObj.cursor;
+      },
+      set(value){
+        this.markerObj.cursor = value;
+      }
+    },
+    draggable: {
+      get(){
+        return this.markerObj.draggable;
+      },
+      set(value){
+        this.markerObj.draggable = value;
+      }
+    },
+    icon: {
+      get(){
+        return this.markerObj.icon;
+      },
+      set(value){
+        this.markerObj.icon = value;
+      }
+    },
+    label: {
+      get(){
+        return this.markerObj.label;
+      },
+      set(value){
+        this.markerObj.label = value;
+      }
+    },
+    opacity: {
+      get(){
+        return this.markerObj.opacity;
+      },
+      set(value){
+        this.markerObj.opacity = value;
+      }
+    },
+    place: {
+      get(){
+        return this.markerObj.place;
+      },
+      set(value){
+        this.markerObj.place = value;
+      }
+    },
+    position: {
+      get(){
+        return this.markerObj.position;
+      },
+      set(value){
+        this.markerObj.position = value;
+      }
+    },
+    shape: {
+      get(){
+        return this.markerObj.shape;
+      },
+      set(value){
+        this.markerObj.shape = value;
+      }
+    },
+    title: {
+      get(){
+        return this.markerObj.title;
+      },
+      set(value){
+        this.markerObj.title = value;
+      }
+    },
+    zIndex: {
+      get(){
+        return this.markerObj.zIndex;
+      },
+      set(value){
+        this.markerObj.zIndex = value;
+      }
+    },
+    visible: {
+      get(){
+        return this.markerObj.visible;
+      },
+      set(value){
+        this.markerObj.visible = value;
+      }
+    },
+  },
   created() {
+    this.$on('register-infoWindow',this.registerInfoWindow);
+    this.$on('cluster-ready',this.clusterReady);
     this.destroyed = false;
+    this.markerObj.animation = (typeof this.markerObj.animation  === 'undefined')?null:this.markerObj.animation;
+    this.markerObj.attribution = (typeof this.markerObj.attribution  === 'undefined')?null:this.markerObj.attribution;
+    this.markerObj.clickable = (typeof this.markerObj.clickable  === 'undefined')?true:this.markerObj.clickable;
+    this.markerObj.cursor = (typeof this.markerObj.cursor  === 'undefined')?null:this.markerObj.cursor;
+    this.markerObj.draggable = (typeof this.markerObj.draggable  === 'undefined')?false:this.markerObj.draggable;
+    this.markerObj.icon = (typeof this.markerObj.icon  === 'undefined')?null:this.markerObj.icon;
+    this.markerObj.label = (typeof this.markerObj.label  === 'undefined')?null:this.markerObj.label;
+    this.markerObj.opacity = (typeof this.markerObj.opacity  === 'undefined')?1:this.markerObj.opacity;
+    this.markerObj.place = (typeof this.markerObj.place  === 'undefined')?null:this.markerObj.place;
+    this.markerObj.position = (typeof this.markerObj.position  === 'undefined')?null:this.markerObj.position;
+    this.markerObj.shape = (typeof this.markerObj.shape  === 'undefined')?null:this.markerObj.shape;
+    this.markerObj.title = (typeof this.markerObj.title  === 'undefined')?null:this.markerObj.title;
+    this.markerObj.zIndex = (typeof this.markerObj.zIndex  === 'undefined')?null:this.markerObj.zIndex;
+    this.markerObj.visible = (typeof this.markerObj.visible  === 'undefined')?'auto':this.markerObj.visible;
   },
 
-  attached() {
+  mounted() {
     if (this.visible === 'auto') {
       this.visible = true;
     }
   },
 
-  detached() {
+  destroyed() {
     if (this.visible === 'auto') {
       this.visible = false;
     }
-  },
-
-  destroyed() {
     this.destroyed = true;
+    this.$off('register-infoWindow', this.registerInfoWindow);
+    this.$off('cluster-ready', this.clusterReady);
     if (!this.$markerObject)
         return;
 
@@ -129,9 +262,9 @@ export default MapComponent.extend({
 
   deferredReady() {
     /* Send an event to any <cluster> parent */
-    this.$dispatch('register-marker', this);
+    eventHub.$emit('register-marker', this);
 
-    const options = _.mapValues(props, (value, prop) => this[prop]);
+    const options = _.clone(this.markerObj);
     options.map = this.$map;
     this.createMarker(options, this.$map);
   },
@@ -141,24 +274,20 @@ export default MapComponent.extend({
       // FIXME: @Guillaumne do we need this?
       if (!this.destroyed) {
         this.$markerObject = new google.maps.Marker(options);
-        propsBinder(this, this.$markerObject, props);
+        propsBinder(this, this.$markerObject, markerProps);
         eventsBinder(this, this.$markerObject, events);
 
         if (this.$clusterObject) {
           this.$clusterObject.addMarker(this.$markerObject);
         }
       }
-    }
-  },
-
-  events: {
-    'register-infoWindow' (infoWindow) {
+    },
+    registerInfoWindow(infoWindow) {
       infoWindow.$emit('marker-ready', this, this.$map);
     },
-
-    'cluster-ready' (cluster, map) {
+    clusterReady(cluster, map) {
       this.$clusterObject = cluster;
-    },
+    }
   }
 })
 
