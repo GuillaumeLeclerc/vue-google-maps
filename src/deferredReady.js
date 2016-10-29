@@ -1,4 +1,6 @@
 import Q from "q";
+import _ from 'lodash';
+import eventHub from "./utils/eventHub";
 
 /**
  * 1. Create a DeferredReady plugin.
@@ -60,44 +62,63 @@ export var DeferredReady = {
   },
 };
 
-function runHooks(vm) {
-  var hooks = vm.$options.deferredReady || [];
-  if (typeof hooks === 'function') {
-    hooks = [hooks]
-  }
-  Promise.all(hooks.map(x => {
-    var rv;
-    try {
-      rv = x.apply(vm)
-    } catch (err) {
-      console.error(err.stack);
+var hasChildInVueComponent = function (vueComponent, child) {
+  var findReturn = _.find(vueComponent.$children, function(c) {
+    if (c == child)
+      return true;
+    if (c.$children.length) {
+      return hasChildInVueComponent(c,child);
     }
-    return rv;
-  })) // execute all handlers, expecting them to return promises
-  // wait for the promises to complete, before allowing child to execute
-    .then(() => {
-      vm.$deferredReadyDeferred.resolve()
-    });
-}
+    return false;
+  });
+  return typeof findReturn !== 'undefined';
 
+};
 export var DeferredReadyMixin = {
   created() {
+    //console.log('created', this);
+    eventHub.$on('register-deferredReadyChild', this.registerDeferredReadyChild);
     this.$hasDeferredReadyAncestors = false;
     this.$deferredReadyDeferred = Q.defer();
   },
-
+  destroy(){
+    //console.log('destroy', this);
+    eventHub.$off('register-deferredReadyChild', this.registerDeferredReadyChild);
+  },
   mounted() {
-    this.$emit('register-deferredReadyChild', this);
+    //console.log('Mounted', this);
+    eventHub.$emit('register-deferredReadyChild', this);
 
     if (!this.$hasDeferredReadyAncestors) {
       // call deferredReady() hook only after ready() has completed
-      this.$nextTick(() => runHooks(this));
+      this.$nextTick(() => this.runHooks(this));
     }
     /* else hooks will be called when parents are done */
   },
-
-  events: {
-    'register-deferredReadyChild' (child) {
+  methods: {
+    runHooks(vm) {
+      var hooks = vm.$options.deferredReady || [];
+      if (typeof hooks === 'function') {
+        hooks = [hooks]
+      }
+      Promise.all(hooks.map(x => {
+        var rv;
+        try {
+          rv = x.apply(vm)
+        } catch (err) {
+          console.error(err.stack);
+        }
+        return rv;
+      })) // execute all handlers, expecting them to return promises
+      // wait for the promises to complete, before allowing child to execute
+        .then(() => {
+          vm.$deferredReadyDeferred.resolve()
+        });
+    },
+    registerDeferredReadyChild(child) {
+      if (!hasChildInVueComponent(this, child))
+        return true;
+      //console.log('registerDeferredReadyChild', this, child);
       if (this == child)
         return true;
 
@@ -107,8 +128,8 @@ export var DeferredReadyMixin = {
       // after we are done running deferredReady()
       // children should run their deferredReady()
       this.$deferredReadyDeferred.promise
-        .then(() => runHooks(child));
-    },
-  },
+        .then(() => this.runHooks(child));
+    }
+  }
 };
 

@@ -1,16 +1,16 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
 <template>
-  <div class="vue-map-container">
-    <div class="vue-map"></div>
-    <slot></slot>
-  </div>
+    <div class="vue-map-container">
+        <div class="vue-map"></div>
+        <slot></slot>
+    </div>
 </template>
 
 <script>
 import Q from 'q';
 import _ from 'lodash';
-
+import eventHub from '../utils/eventHub';
 import {loaded} from '../manager.js';
 import {DeferredReadyMixin} from '../deferredReady.js';
 import eventsBinder from '../utils/eventsBinder.js';
@@ -81,14 +81,13 @@ const callableMethods = [
   'fitBounds'
 ];
 
-const methods = {};
-
 /**
   Implementation note: this signal should only be
   called after the map has been initialized
 
 **/
 const registerChild = function (child, type) {
+  //console.log('registerChild', this, child);
   if (!this.mapObject)
     throw new Error("Map not initialized");
   child.$emit('map-ready', this.mapObject);
@@ -96,8 +95,9 @@ const registerChild = function (child, type) {
   // modular
 }
 
+const methods = {registerChild:registerChild};
+
 const eventListeners = {
-  'register-component': registerChild,
   'g-bounds_changed' () {
     this.bounds=this.mapObject.getBounds();
   },
@@ -170,8 +170,22 @@ export default {
     }
   },
   created() {
+    //console.log('created Map', this);
+    eventHub.$on('register-component', this.registerChild);
+    var self = this;
+    _.forEach(eventListeners, function(event, index){
+      self.$on(index, event);
+    });
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
+  },
+  destroy(){
+    //console.log('destroy Map', this);
+    var self = this;
+    _.forEach(eventListeners, function(event, index){
+      self.$off(index, event);
+    });
+    eventHub.$off('register-component', this.registerChild);
   },
   deferredReady() {
     return loaded.then(() => {
@@ -206,23 +220,23 @@ export default {
       throw error;
     });
   },
-  events: eventListeners,
   methods: methods
 }
+
 </script>
 
 <style lang="less">
 
-  .full() {
-    width: 100%;
-    height: 100%;
-  }
-
-  .vue-map-container {
-    .full();
-    .vue-map {
-      .full();
+    .full() {
+        width: 100%;
+        height: 100%;
     }
-  }
+
+    .vue-map-container {
+        .full();
+        .vue-map {
+            .full();
+        }
+    }
 
 </style>
