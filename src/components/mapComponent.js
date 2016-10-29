@@ -26,7 +26,7 @@ export default Vue.extend({
   },
 
   deferredReady () {
-    this.$dispatch('register-component', this);
+    this.$emit('register-component', this);
   },
 
   events: {

@@ -1,10 +1,10 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
 <template>
-<div class="vue-map-container">
-  <div class="vue-map"></div>
-  <slot></slot>
-</div>
+  <div class="vue-map-container">
+    <div class="vue-map"></div>
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -21,14 +21,12 @@ import getPropsMixin from '../utils/getPropsValuesMixin.js'
 
 Vue.use(DeferredReady);
 
-const props = {
+const mapsProps = {
   center: {
-    required: true,
     twoWay: true,
     type: Object
   },
   zoom: {
-    required: false,
     twoWay: true,
     type: Number
   },
@@ -41,13 +39,22 @@ const props = {
     type: String
   },
   bounds: {
-    type: Object,
     twoWay: true,
+    type: Object,
   },
   options: {
     twoWay: false,
     type: Object,
-    default () {return {}}
+  }
+};
+
+const props = {
+  mapObj: {
+    required: true,
+    type: Object,
+    validator: function (value) {
+      return (typeof value.center === 'object');
+    }
   }
 };
 
@@ -119,29 +126,67 @@ _.each(callableMethods, function (methodName) {
 export default {
   mixins: [getPropsMixin, DeferredReadyMixin],
   props: props,
-  replace:false, // necessary for css styles
+  //replace:false, // necessary for css styles
+  computed:{
+    center:{
+      get() {
+        return this.mapObj.center;
+      },
+      set(value){
+        this.mapObj.center = value;
+      }
+    },
+    zoom:{
+      get() {
+        return this.mapObj.zoom;
+      },
+      set(value){
+        this.mapObj.zoom = value;
+      }
+    },
+    heading:{
+      get() {
+        return this.mapObj.heading;
+      },
+      set(value){
+        this.mapObj.heading = value;
+      }
+    },
+    mapTypeId:{
+      get() {
+        return this.mapObj.mapTypeId;
+      },
+      set(value){
+        this.mapObj.mapTypeId = value;
+      }
+    },
+    bounds:{
+      get() {
+        return this.mapObj.bounds;
+      },
+      set(value){
+        this.mapObj.bounds = value;
+      }
+    }
+  },
   created() {
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
   },
-
-  ready() {
-  },
-
   deferredReady() {
     return loaded.then(() => {
       // getting the DOM element where to create the map
       const element = this.$el.getElementsByClassName('vue-map')[0];
 
       // creating the map
-      const copiedData = _.clone(this.getPropsValues());
+      const copiedData = _.clone(this.mapObj);
       delete copiedData.options;
-      const options = _.clone(this.options);
+      const options = _.clone(this.options?this.options:{});
       _.assign(options, copiedData);
       this.mapObject = new google.maps.Map(element, options);
 
       // we con't want to bind props because it's a kind of "computed" property
-      const boundProps = _.clone(props);
+      const boundProps = _.clone(mapsProps);
       delete boundProps.bounds;
       //binding properties (two and one way)
       propsBinder(this, this.mapObject, boundProps);
@@ -168,16 +213,16 @@ export default {
 
 <style lang="less">
 
-.full() {
-  width: 100%;
-  height:100%;
-}
-
-.vue-map-container {
-  .full();
-  .vue-map {
-    .full();
+  .full() {
+    width: 100%;
+    height: 100%;
   }
-}
+
+  .vue-map-container {
+    .full();
+    .vue-map {
+      .full();
+    }
+  }
 
 </style>

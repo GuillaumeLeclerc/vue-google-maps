@@ -11,7 +11,7 @@
     "js-marker-clusterer": "^1.0.0"
   },
   "peerDependencies": {
-    "vue": "^1.0.0",
+    "vue": "^2.0.3",
     "lodash": "^4.15.0",
     "q": "^1.4.1"
   },
