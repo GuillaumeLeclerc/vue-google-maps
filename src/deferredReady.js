@@ -64,12 +64,7 @@ export var DeferredReady = {
 
 var hasChildInVueComponent = function (vueComponent, child) {
   var findReturn = _.find(vueComponent.$children, function(c) {
-    if (c == child)
-      return true;
-    if (c.$children.length) {
-      return hasChildInVueComponent(c,child);
-    }
-    return false;
+    return c == child;
   });
   return typeof findReturn !== 'undefined';
 
@@ -86,7 +81,7 @@ export var DeferredReadyMixin = {
     eventHub.$off('register-deferredReadyChild', this.registerDeferredReadyChild);
   },
   mounted() {
-    //console.log('Mounted', this);
+    // console.log('Mounted', this);
     eventHub.$emit('register-deferredReadyChild', this);
 
     if (!this.$hasDeferredReadyAncestors) {
@@ -118,9 +113,8 @@ export var DeferredReadyMixin = {
     registerDeferredReadyChild(child) {
       if (!hasChildInVueComponent(this, child))
         return true;
-      //console.log('registerDeferredReadyChild', this, child);
-      if (this == child)
-        return true;
+      // console.log('registerDeferredReadyChild', this, child);
+      if (this == child)        return true;
 
       // delay child's execution of its hooks
       child.$hasDeferredReadyAncestors = true;

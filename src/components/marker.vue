@@ -1,5 +1,8 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
+<template>
+</template>
+
 <script>
 
 import _ from 'lodash';
@@ -99,7 +102,6 @@ var container;
  * subclass.
  */
 export default MapComponent.extend({
-  render(){return ''},
   mixins: [getPropsValuesMixin],
   props: props,
   computed:{
@@ -262,6 +264,7 @@ export default MapComponent.extend({
 
   deferredReady() {
     /* Send an event to any <cluster> parent */
+    //console.log('emit register-marker', this);
     eventHub.$emit('register-marker', this);
 
     const options = _.clone(this.markerObj);
@@ -286,6 +289,7 @@ export default MapComponent.extend({
       infoWindow.$emit('marker-ready', this, this.$map);
     },
     clusterReady(cluster, map) {
+      //console.log('treat cluster-ready', this, cluster, map);
       this.$clusterObject = cluster;
     }
   }
