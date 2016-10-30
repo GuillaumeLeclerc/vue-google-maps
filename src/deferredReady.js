@@ -126,4 +126,4 @@ export var DeferredReadyMixin = {
     }
   }
 };
-
+export var hasChildInVueComponent = hasChildInVueComponent;

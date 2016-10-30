@@ -1,6 +1,9 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
 <template>
+    <div>
+        <slot></slot>
+    </div>
 </template>
 
 <script>
@@ -12,6 +15,7 @@ import propsBinder from '../utils/propsBinder.js';
 import getPropsValuesMixin from '../utils/getPropsValuesMixin.js';
 import Q from 'q';
 import MapComponent from './mapComponent';
+import {hasChildInVueComponent} from '../deferredReady';
 import assert from 'assert';
 
 const markerProps = {
@@ -219,7 +223,7 @@ export default MapComponent.extend({
     },
   },
   created() {
-    this.$on('register-infoWindow',this.registerInfoWindow);
+    eventHub.$on('register-info-window',this.registerInfoWindow);
     this.$on('cluster-ready',this.clusterReady);
     this.destroyed = false;
     this.markerObj.animation = (typeof this.markerObj.animation  === 'undefined')?null:this.markerObj.animation;
@@ -249,7 +253,7 @@ export default MapComponent.extend({
       this.visible = false;
     }
     this.destroyed = true;
-    this.$off('register-infoWindow', this.registerInfoWindow);
+    eventHub.$off('register-info-window', this.registerInfoWindow);
     this.$off('cluster-ready', this.clusterReady);
     if (!this.$markerObject)
         return;
@@ -286,6 +290,8 @@ export default MapComponent.extend({
       }
     },
     registerInfoWindow(infoWindow) {
+      if (!hasChildInVueComponent(this,infoWindow))
+        return;
       infoWindow.$emit('marker-ready', this, this.$map);
     },
     clusterReady(cluster, map) {
