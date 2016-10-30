@@ -15,14 +15,14 @@
 <div id="marker-app" style="width: 100%; height: 500px">
     <place-input
             :place-input-obj="placeInputObj2"
-            @g-place_changed="paceChanged"
+            @g-place_changed="paceChanged(placeInputObj2)"
     ></place-input>
     <gmap
             :map-obj="mapObj"
     >
         <place-input
                 :place-input-obj="placeInputObj"
-                @g-place_changed="paceChanged"
+                @g-place_changed="paceChanged(placeInputObj)"
         ></place-input>
         <gcluster
                 :max-zoom="maxZoom"
@@ -175,8 +175,8 @@
                 }
             },
             methods:{
-                paceChanged: function(){
-                    console.log(this.placeInputObj);
+                paceChanged: function(placeInputObj){
+                    console.log(placeInputObj);
                 }
             },
             components: {
