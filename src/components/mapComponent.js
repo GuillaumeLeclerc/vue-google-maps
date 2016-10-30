@@ -21,7 +21,9 @@ Vue.use(DeferredReady);
 export default Vue.extend({
 
   mixins: [DeferredReadyMixin],
-    
+  beforeCreate(){
+    this.$registerComponent = true;
+  },
   created() {
     //console.log('create MapComponent', this);
     this.$on('map-ready',this.mapReady);
@@ -32,7 +34,9 @@ export default Vue.extend({
   },
   deferredReady () {
     //console.log('emit register-component', this);
-    eventHub.$emit('register-component', this);
+    if (this.$registerComponent) {
+      eventHub.$emit('register-component', this);
+    }
   },
   methods: {
     mapReady(map) {
