@@ -167,6 +167,14 @@ export default {
       set(value){
         this.mapObj.bounds = value;
       }
+    },
+    options:{
+      get() {
+        return this.mapObj.options;
+      },
+      set(value){
+        this.mapObj.options = value;
+      }
     }
   },
   created() {
@@ -178,6 +186,8 @@ export default {
     });
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
+    this.mapObj.zoom = (typeof this.mapObj.zoom === 'undefined')?8:this.mapObj.zoom;
+    this.mapObj.options = (typeof this.mapObj.options === 'undefined')?{}:this.mapObj.options;
   },
   destroy(){
     //console.log('destroy Map', this);
@@ -195,7 +205,7 @@ export default {
       // creating the map
       const copiedData = _.clone(this.mapObj);
       delete copiedData.options;
-      const options = _.clone(this.options?this.options:{});
+      const options = _.clone(this.mapObj.options);
       _.assign(options, copiedData);
       this.mapObject = new google.maps.Map(element, options);
 
