@@ -15,7 +15,7 @@ import propsBinder from '../utils/propsBinder.js';
 import getPropsValuesMixin from '../utils/getPropsValuesMixin.js';
 import Q from 'q';
 import MapComponent from './mapComponent';
-import {hasChildInVueComponent} from '../deferredReady';
+import {hasChildInVueComponent} from '../utils/hasChildInVueComponent';
 import assert from 'assert';
 
 const markerProps = {

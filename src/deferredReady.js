@@ -1,6 +1,7 @@
 import Q from "q";
 import _ from 'lodash';
 import eventHub from "./utils/eventHub";
+import {hasChildInVueComponent} from './utils/hasChildInVueComponent';
 
 /**
  * 1. Create a DeferredReady plugin.
@@ -62,13 +63,6 @@ export var DeferredReady = {
   },
 };
 
-var hasChildInVueComponent = function (vueComponent, child) {
-  var findReturn = _.find(vueComponent.$children, function(c) {
-    return c == child;
-  });
-  return typeof findReturn !== 'undefined';
-
-};
 export var DeferredReadyMixin = {
   created() {
     //console.log('created', this);
@@ -126,4 +120,3 @@ export var DeferredReadyMixin = {
     }
   }
 };
-export var hasChildInVueComponent = hasChildInVueComponent;
