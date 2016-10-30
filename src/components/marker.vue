@@ -299,6 +299,5 @@ export default MapComponent.extend({
       this.$clusterObject = cluster;
     }
   }
-})
-
+});
 </script>

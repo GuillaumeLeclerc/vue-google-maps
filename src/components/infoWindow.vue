@@ -195,7 +195,6 @@ export default MapComponent.extend({
       });
     }
   }
-})
-
+});
 </script>
 

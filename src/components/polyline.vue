@@ -7,10 +7,10 @@
 
 import _ from 'lodash';
 
-import eventBinder from '../utils/eventsBinder.js'
-import propsBinder from '../utils/propsBinder.js'
+import eventBinder from '../utils/eventsBinder.js';
+import propsBinder from '../utils/propsBinder.js';
 import MapComponent from './mapComponent';
-import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js';
 
 const polylineProps = {
   path: {
@@ -161,8 +161,6 @@ export default MapComponent.extend({
     this.$polyLineObject.setMap(this.$map);
   },
 
-})
-
-
+});
 </script>
 

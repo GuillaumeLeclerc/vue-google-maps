@@ -162,8 +162,5 @@ export default MapComponent.extend({
         this.$circleObject.setMap(null);
       }
     },
-})
-
-
-
+});
 </script>

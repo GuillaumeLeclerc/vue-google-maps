@@ -59,5 +59,5 @@ export default MapComponent.extend({
       element.$emit('cluster-ready', this.$clusterObject, this.$map);
     }
   }
-})
+});
 </script>

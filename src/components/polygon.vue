@@ -7,10 +7,10 @@
 
 import _ from 'lodash';
 
-import eventBinder from '../utils/eventsBinder.js'
-import propsBinder from '../utils/propsBinder.js'
-import MapComponent from './mapComponent'
-import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
+import eventBinder from '../utils/eventsBinder.js';
+import propsBinder from '../utils/propsBinder.js';
+import MapComponent from './mapComponent';
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js';
 
 const polygonProps = {
   path: {
@@ -214,8 +214,6 @@ export default MapComponent.extend({
       this.$polygonObject.setMap(null);
     }
   },
-})
-
-
+});
 </script>
 

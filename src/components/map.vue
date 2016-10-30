@@ -221,8 +221,7 @@ export default {
     });
   },
   methods: methods
-}
-
+};
 </script>
 
 <style lang="less">
