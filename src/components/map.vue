@@ -50,14 +50,37 @@ const mapsProps = {
 };
 
 const props = {
-  mapObj: {
-    required: true,
+  center: {
     type: Object,
-    validator: function (value) {
-      return (typeof value.center === 'object');
-    }
+    required: true
+  },
+  zoom: {
+    type: Number,
+    default () {return 8}
+  },
+  heading: {
+    type: Number
+  },
+  mapTypeId: {
+    type: String
+  },
+  bounds: {
+    type: Object,
+  },
+  options: {
+    type: Object,
+    default () {return {}}
   }
 };
+// = {
+//  mapObj: {
+//    required: true,
+//    type: Object,
+//    validator: function (value) {
+//      return (typeof value.center === 'object');
+//    }
+//  }
+//};
 
 const events = [
   'click',
@@ -72,6 +95,10 @@ const events = [
   'idle',
   'resize',
   'tilesloaded',
+//  'center_changed',
+//  'zoom_changed',
+//  'heading_changed',
+//  'mapTypeId_changed',
   'bounds_changed'
 ];
 
@@ -132,50 +159,49 @@ export default {
   computed:{
     center:{
       get() {
-        return this.mapObj.center;
+        return this.$options.propsData.center;
       },
       set(value){
-        this.mapObj.center = value;
+        this.$emit('center_changed', value);
       }
     },
     zoom:{
       get() {
-        return this.mapObj.zoom;
+        return this.$options.propsData.zoom;
       },
       set(value){
-        this.mapObj.zoom = value;
+        this.$emit('zoom_changed', value);
       }
     },
     heading:{
       get() {
-        return this.mapObj.heading;
+        return this.$options.propsData.heading;
       },
       set(value){
-        this.mapObj.heading = value;
+        this.$emit('heading_changed', value);
       }
     },
     mapTypeId:{
       get() {
-        return this.mapObj.mapTypeId;
+        return this.$options.propsData.mapTypeId;
       },
       set(value){
-        this.mapObj.mapTypeId = value;
+        this.$emit('mapTypeId_changed', value);
       }
     },
     bounds:{
       get() {
-        return this.mapObj.bounds;
+        return this.$options.propsData.bounds;
       },
       set(value){
-        this.mapObj.bounds = value;
+        this.$emit('bounds_changed', value);
       }
     },
     options:{
       get() {
-        return this.mapObj.options;
+        return this.$options.propsData.options?this.$options.propsData.options:{};
       },
       set(value){
-        this.mapObj.options = value;
       }
     }
   },
@@ -188,8 +214,6 @@ export default {
     });
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
-    this.mapObj.zoom = (typeof this.mapObj.zoom === 'undefined')?8:this.mapObj.zoom;
-    this.mapObj.options = (typeof this.mapObj.options === 'undefined')?{}:this.mapObj.options;
   },
   destroyed(){
     //console.log('destroy Map', this);
@@ -207,9 +231,9 @@ export default {
       const element = this.$el.getElementsByClassName('vue-map')[0];
 
       // creating the map
-      const copiedData = _.clone(this.mapObj);
+      const copiedData = _.clone(this.getPropsValues());
       delete copiedData.options;
-      const options = _.clone(this.mapObj.options);
+      const options = _.clone(this.options);
       _.assign(options, copiedData);
       this.mapObject = new google.maps.Map(element, options);
 
