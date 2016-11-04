@@ -164,8 +164,6 @@
     mounted () {
     },
     deferredReady() {
-      if (this.destroyed)
-        return;
       const input = this.$refs.input;
       input.value = this.place.name;
       if (this.placeInputObj.mapEmbedded){

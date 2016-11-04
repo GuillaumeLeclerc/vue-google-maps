@@ -117,8 +117,6 @@ export default MapComponent.extend({
   },
 
   deferredReady() {
-    if (this.destroyed)
-      return;
     const options = _.clone(this.polygonObj);
     delete options.options;
     _.assign(options, this.options);

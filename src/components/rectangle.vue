@@ -95,8 +95,6 @@ export default MapComponent.extend({
         this.rectangleObj.options = (typeof this.rectangleObj.options === 'undefined')?{}:this.rectangleObj.options;
     },
     deferredReady() {
-        if (this.destroyed)
-            return;
         const options = _.clone(this.rectangleObj);
         options.map = this.$map;
         this.createRectangle(options, this.$map);

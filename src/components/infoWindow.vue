@@ -16,6 +16,7 @@ import propsBinder from '../utils/propsBinder.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import mutationObserver from '../utils/mutationObserver.js';
 import MapComponent from './mapComponent';
+import {getParentTest} from '../utils/getParentTest';
 
 const infoWindowProps = {
   options: {
@@ -120,9 +121,9 @@ export default MapComponent.extend({
   },
 
   deferredReady() {
-    if (this.destroyed)
-      return;
-    eventHub.$emit('register-info-window', this);
+    var parent = this.getParentAcceptInfoWindow(this);
+    if (parent)
+      parent.$emit('register-info-window', this);
     this.createInfoWindow(this.$map);
   },
 
@@ -191,6 +192,11 @@ export default MapComponent.extend({
       this.$markerObject = marker.$markerObject;
       marker.$on('g-click', () => {
         this.opened = !this.opened;
+      });
+    },
+    getParentAcceptInfoWindow(child){
+      return getParentTest(child, function (component) {
+        return component._acceptInfoWindow==true;
       });
     }
   }

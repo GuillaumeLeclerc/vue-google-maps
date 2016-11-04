@@ -123,8 +123,6 @@ export default MapComponent.extend({
         this.circleObj.options = (typeof this.circleObj.options === 'undefined')?{}:this.circleObj.options;
     },
     deferredReady() {
-        if (this.destroyed)
-              return;
         const options = _.clone(this.circleObj);
         options.map = this.$map;
         delete options.bounds;

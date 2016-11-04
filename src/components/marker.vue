@@ -15,7 +15,7 @@ import propsBinder from '../utils/propsBinder.js';
 import getPropsValuesMixin from '../utils/getPropsValuesMixin.js';
 import Q from 'q';
 import MapComponent from './mapComponent';
-import {hasChildInVueComponent} from '../utils/hasChildInVueComponent';
+import {getParentTest} from '../utils/getParentTest';
 import assert from 'assert';
 
 const markerProps = {
@@ -223,7 +223,8 @@ export default MapComponent.extend({
     },
   },
   created() {
-    eventHub.$on('register-info-window',this.registerInfoWindow);
+    this._acceptInfoWindow = true;
+    this.$on('register-info-window',this.registerInfoWindow);
     this.$on('cluster-ready',this.clusterReady);
     this.$on('cluster-destroyed',this.clusterDestroyed);
     this.markerObj.animation = (typeof this.markerObj.animation  === 'undefined')?null:this.markerObj.animation;
@@ -253,7 +254,7 @@ export default MapComponent.extend({
     }
   },
   destroyed() {
-    eventHub.$off('register-info-window', this.registerInfoWindow);
+    this.$off('register-info-window', this.registerInfoWindow);
     this.$off('cluster-ready', this.clusterReady);
     this.$off('cluster-destroyed',this.clusterDestroyed);
     if (!this.$markerObject)
@@ -266,13 +267,12 @@ export default MapComponent.extend({
       this.$markerObject.setMap(null);
     }
   },
-
   deferredReady() {
-    if (this.destroyed)
-      return;
     /* Send an event to any <cluster> parent */
     //console.log('emit register-marker', this);
-    eventHub.$emit('register-marker', this);
+    var parent = this.getParentAcceptMarker(this);
+    if (parent)
+      parent.$emit('register-marker', this);
 
     const options = _.clone(this.markerObj);
     options.map = this.$map;
@@ -285,7 +285,7 @@ export default MapComponent.extend({
       if (this.destroyed)
         return;
 
-      this.$markerObject = new google.maps.Marker(options);
+      this.$markerObject = this.createMarkerObject(options);
       propsBinder(this, this.$markerObject, markerProps);
       eventsBinder(this, this.$markerObject, events);
 
@@ -293,20 +293,24 @@ export default MapComponent.extend({
         this.$clusterObject.addMarker(this.$markerObject);
       }
     },
+    createMarkerObject(options){
+      return new google.maps.Marker(options);
+    },
     registerInfoWindow(infoWindow) {
-      if (this.destroyed || !hasChildInVueComponent(this,infoWindow))
-        return;
       infoWindow.$emit('marker-ready', this, this.$map);
     },
     clusterReady(cluster, map) {
       //console.log('treat cluster-ready', this, cluster, map);
-      if (this.destroyed)
-        return;
       this.$clusterObject = cluster;
     },
     clusterDestroyed(cluster, map) {
-      console.log('treat cluster-Destroyed', this, cluster, map);
+      //console.log('treat cluster-Destroyed', this, cluster, map);
       this.$clusterObject = null;
+    },
+    getParentAcceptMarker(child){
+      return getParentTest(child, function (component) {
+        return component._acceptMarker==true;
+      });
     }
   }
 });
