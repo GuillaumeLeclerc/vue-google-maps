@@ -72,9 +72,49 @@ const markerProps = {
 }
 
 const props = {
-  markerObj: {
-    required: true,
+  animation: {
+    type: Number
+  },
+  attribution: {
     type: Object,
+  },
+  clickable: {
+    type: Boolean,
+    default: true
+  },
+  cursor: {
+    type: String,
+  },
+  draggable: {
+    type: Boolean,
+    default: false
+  },
+  icon: {
+    type: Object,
+  },
+  label: {
+  },
+  opacity: {
+    type: Number,
+    default: 1
+  },
+  place: {
+    type: Object
+  },
+  position: {
+    type: Object,
+  },
+  shape: {
+    type: Object,
+  },
+  title: {
+    type: String,
+  },
+  zIndex: {
+    type: Number,
+  },
+  visible: {
+    default: 'auto'
   }
 }
 
@@ -111,114 +151,114 @@ export default MapComponent.extend({
   computed:{
     animation: {
       get(){
-        return this.markerObj.animation;
+        return this.$options.propsData.animation;
       },
       set(value){
-        this.markerObj.animation = value;
+        this.$emit('animation_changed', value);
       }
     },
     attribution: {
       get(){
-        return this.markerObj.attribution;
+        return this.$options.propsData.attribution;
       },
       set(value){
-        this.markerObj.attribution = value;
+        //this.$emit('attribution_changed', value);
       }
     },
     clickable: {
       get(){
-        return this.markerObj.clickable;
+        return this.$options.propsData.clickable;
       },
       set(value){
-        this.markerObj.clickable = value;
+        this.$emit('clickable_changed', value);
       }
     },
     cursor: {
       get(){
-        return this.markerObj.cursor;
+        return this.$options.propsData.cursor;
       },
       set(value){
-        this.markerObj.cursor = value;
+        this.$emit('cursor_changed', value);
       }
     },
     draggable: {
       get(){
-        return this.markerObj.draggable;
+        return this.$options.propsData.draggable;
       },
       set(value){
-        this.markerObj.draggable = value;
+        this.$emit('draggable_changed', value);
       }
     },
     icon: {
       get(){
-        return this.markerObj.icon;
+        return this.$options.propsData.icon;
       },
       set(value){
-        this.markerObj.icon = value;
+        this.$emit('icon_changed', value);
       }
     },
     label: {
       get(){
-        return this.markerObj.label;
+        return this.$options.propsData.label;
       },
       set(value){
-        this.markerObj.label = value;
+        //this.$emit('label_changed', value);
       }
     },
     opacity: {
       get(){
-        return this.markerObj.opacity;
+        return this.$options.propsData.opacity;
       },
       set(value){
-        this.markerObj.opacity = value;
+        //this.$emit('opacity_changed', value);
       }
     },
     place: {
       get(){
-        return this.markerObj.place;
+        return this.$options.propsData.place;
       },
       set(value){
-        this.markerObj.place = value;
+        //this.$emit('place_changed', value);
       }
     },
     position: {
       get(){
-        return this.markerObj.position;
+        return this.$options.propsData.position;
       },
       set(value){
-        this.markerObj.position = value;
+        this.$emit('position_changed', value);
       }
     },
     shape: {
       get(){
-        return this.markerObj.shape;
+        return this.$options.propsData.shape;
       },
       set(value){
-        this.markerObj.shape = value;
+        this.$emit('shape_changed', value);
       }
     },
     title: {
       get(){
-        return this.markerObj.title;
+        return this.$options.propsData.title;
       },
       set(value){
-        this.markerObj.title = value;
+        this.$emit('title_changed', value);
       }
     },
     zIndex: {
       get(){
-        return this.markerObj.zIndex;
+        return this.$options.propsData.zIndex;
       },
       set(value){
-        this.markerObj.zIndex = value;
+        this.$emit('z-index_changed', value);
       }
     },
     visible: {
       get(){
-        return this.markerObj.visible;
+        return this.$options.propsData.visible;
       },
       set(value){
-        this.markerObj.visible = value;
+        this.$emit('visible_changed', value);
       }
     },
   },
@@ -227,20 +267,6 @@ export default MapComponent.extend({
     this.$on('register-info-window',this.registerInfoWindow);
     this.$on('cluster-ready',this.clusterReady);
     this.$on('cluster-destroyed',this.clusterDestroyed);
-    this.markerObj.animation = (typeof this.markerObj.animation  === 'undefined')?null:this.markerObj.animation;
-    this.markerObj.attribution = (typeof this.markerObj.attribution  === 'undefined')?null:this.markerObj.attribution;
-    this.markerObj.clickable = (typeof this.markerObj.clickable  === 'undefined')?true:this.markerObj.clickable;
-    this.markerObj.cursor = (typeof this.markerObj.cursor  === 'undefined')?null:this.markerObj.cursor;
-    this.markerObj.draggable = (typeof this.markerObj.draggable  === 'undefined')?false:this.markerObj.draggable;
-    this.markerObj.icon = (typeof this.markerObj.icon  === 'undefined')?null:this.markerObj.icon;
-    this.markerObj.label = (typeof this.markerObj.label  === 'undefined')?null:this.markerObj.label;
-    this.markerObj.opacity = (typeof this.markerObj.opacity  === 'undefined')?1:this.markerObj.opacity;
-    this.markerObj.place = (typeof this.markerObj.place  === 'undefined')?null:this.markerObj.place;
-    this.markerObj.position = (typeof this.markerObj.position  === 'undefined')?null:this.markerObj.position;
-    this.markerObj.shape = (typeof this.markerObj.shape  === 'undefined')?null:this.markerObj.shape;
-    this.markerObj.title = (typeof this.markerObj.title  === 'undefined')?null:this.markerObj.title;
-    this.markerObj.zIndex = (typeof this.markerObj.zIndex  === 'undefined')?null:this.markerObj.zIndex;
-    this.markerObj.visible = (typeof this.markerObj.visible  === 'undefined')?'auto':this.markerObj.visible;
   },
 
   mounted() {
@@ -274,7 +300,7 @@ export default MapComponent.extend({
     if (parent)
       parent.$emit('register-marker', this);
 
-    const options = _.clone(this.markerObj);
+    const options = _.clone(this.getPropsValues());
     options.map = this.$map;
     this.createMarker(options, this.$map);
   },
