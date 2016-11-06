@@ -1,6 +1,6 @@
 <body>
 <div id="app" style="width: 100%; height: 500px">
-    <google-map
+    <gmap-map
         :center = "center"
         :zoom="zoom"
         @center_changed = "center = $event"
@@ -16,7 +16,7 @@
             :opacity="opacity"
         >
         </ground-overlay>
-    </google-map>
+    </gmap-map>
 </div>
 
 <button onclick="localStorage.apiKey = prompt('ApiKey'); window.location.reload()">
@@ -74,7 +74,7 @@
                 opacity:0.5
             },
             components: {
-                'googleMap': VueGoogleMap.Map,
+                'gmapMap': VueGoogleMap.Map,
                 'groundOverlay': groundOverlay
             }
         });
