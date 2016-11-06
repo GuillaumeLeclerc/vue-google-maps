@@ -34,6 +34,20 @@ const props = {
 export default MapComponent.extend({
   mixins: [getPropsValuesMixin],
   props: props,
+  computed:{
+    local_maxZoom(){
+      return this.maxZoom;
+    },
+    local_calculor(){
+      return this.calculor;
+    },
+    local_gridSize(){
+      return this.gridSize;
+    },
+    local_styles(){
+      return this.styles;
+    },
+  },
   created(){
     this._acceptMarker = true;
     this.$on('register-marker', this.clusterReady);
