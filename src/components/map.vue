@@ -166,7 +166,14 @@ export default {
   //replace:false, // necessary for css styles
   data(){
     return {
-      mapObj: { center: {lat:0, lng:0}}
+      mapObj: {
+        center: {lat:null, lng:null},
+        zoom: null,
+        heading: null,
+        mapTypeId: null,
+        bounds: null,
+        options: null
+      }
     };
   },
   computed:{

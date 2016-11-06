@@ -70,7 +70,7 @@ const getLocalField = function (self, field){
 };
 const setLocalField = function (self, field, value){
   self.infoWindowObj[field] = value;
-  self.$emit(field+'_changed', value);
+  self.$emit(field.replace(/([a-z](?=[A-Z]))/g, '$1-').toLowerCase()+'_changed', value);
   self.$nextTick(function (){
     self.infoWindowObj[field] = getLocalField(self, field);
   });
@@ -80,7 +80,11 @@ export default MapComponent.extend({
   data(){
     return {
       infoWindowObj: {
-        opened:true
+        options:null,
+        content:null,
+        opened:null,
+        position:null,
+        zIndex:null
       }
     };
   },
