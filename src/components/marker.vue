@@ -137,7 +137,6 @@ const getLocalField = function (self, field){
   return (typeof self.$options.propsData[field] !== 'undefined')?self[field]:self.markerObj[field];
 };
 const setLocalField = function (self, field, value){
-  console.log(self.markerObj[field], value);
   self.markerObj[field] = value;
   self.$emit(field.replace(/([a-z](?=[A-Z]))/g, '$1-').toLowerCase()+'_changed', value);
   self.$nextTick(function (){
