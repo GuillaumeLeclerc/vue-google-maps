@@ -56,7 +56,7 @@ const props = {
   },
   zoom: {
     type: Number,
-    default () {return 8}
+    default () {return 8;}
   },
   heading: {
     type: Number
@@ -127,7 +127,7 @@ const methods = {registerChild:registerChild};
 
 const eventListeners = {
   'g-bounds_changed' () {
-    this.bounds=this.mapObject.getBounds();
+    this.local_bounds=this.mapObject.getBounds();
   },
   'g-fitBounds' (bounds) {
     if (this.mapObject && bounds) {
@@ -150,57 +150,72 @@ _.each(callableMethods, function (methodName) {
   eventListeners['g-' + methodName] = applier;
   methods[methodName] = applier;
 });
-
+const getLocalField = function (self, field){
+  return (typeof self.$options.propsData[field] !== 'undefined')?self[field]:self.mapObj[field];
+};
+const setLocalField = function (self, field, value){
+  self.mapObj[field] = value;
+  self.$emit(field+'_changed', value);
+  self.$nextTick(function (){
+    self.mapObj[field] = getLocalField(self, field);
+  });
+};
 export default {
   mixins: [getPropsMixin, DeferredReadyMixin],
   props: props,
   //replace:false, // necessary for css styles
+  data(){
+    return {
+      mapObj: { center: {lat:0, lng:0}}
+    };
+  },
   computed:{
-    center:{
-      get() {
-        return this.$options.propsData.center;
+    local_center:{
+      get(){
+        return getLocalField(this, 'center');
       },
       set(value){
-        this.$emit('center_changed', value);
+        setLocalField(this, 'center', value);
       }
     },
-    zoom:{
-      get() {
-        return this.$options.propsData.zoom;
+    local_zoom:{
+      get(){
+        return getLocalField(this, 'zoom');
       },
       set(value){
-        this.$emit('zoom_changed', value);
+        setLocalField(this, 'zoom', value);
       }
     },
-    heading:{
-      get() {
-        return this.$options.propsData.heading;
+    local_heading:{
+      get(){
+        return getLocalField(this, 'heading');
       },
       set(value){
-        this.$emit('heading_changed', value);
+        setLocalField(this, 'heading', value);
       }
     },
-    mapTypeId:{
-      get() {
-        return this.$options.propsData.mapTypeId;
+    local_mapTypeId:{
+      get(){
+        return getLocalField(this, 'mapTypeId');
       },
       set(value){
-        this.$emit('mapTypeId_changed', value);
+        setLocalField(this, 'mapTypeId', value);
       }
     },
-    bounds:{
-      get() {
-        return this.$options.propsData.bounds;
+    local_bounds:{
+      get(){
+        return getLocalField(this, 'bounds');
       },
       set(value){
-        this.$emit('bounds_changed', value);
+        setLocalField(this, 'bounds', value);
       }
     },
-    options:{
-      get() {
-        return this.$options.propsData.options?this.$options.propsData.options:{};
+    local_options:{
+      get(){
+        return getLocalField(this, 'options');
       },
       set(value){
+        setLocalField(this, 'options', value);
       }
     }
   },
@@ -216,6 +231,13 @@ export default {
     });
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
+
+    this.mapObj.center = this.center;
+    this.mapObj.zoom = this.zoom;
+    this.mapObj.heading = this.heading;
+    this.mapObj.mapTypeId = this.mapTypeId;
+    this.mapObj.bounds = this.bounds;
+    this.mapObj.options = this.options;
   },
   destroyed(){
     //console.log('destroy Map', this);

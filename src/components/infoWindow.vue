@@ -65,7 +65,16 @@ const events = [
   'closeclick'
 ]
 
-
+const getLocalField = function (self, field){
+  return (typeof self.$options.propsData[field] !== 'undefined')?self[field]:self.infoWindowObj[field];
+};
+const setLocalField = function (self, field, value){
+  self.infoWindowObj[field] = value;
+  self.$emit(field+'_changed', value);
+  self.$nextTick(function (){
+    self.infoWindowObj[field] = getLocalField(self, field);
+  });
+};
 export default MapComponent.extend({
   props: props,
   data(){
@@ -78,31 +87,23 @@ export default MapComponent.extend({
   computed:{
     local_options:{
       get(){
-        return (typeof this.$options.propsData.options !== 'undefined')?this.options:this.infoWindowObj.options;
+        return getLocalField(this, 'options');
       },
       set(value){
-        this.infoWindowObj.options = value;
-        this.$emit('options_changed', value);
-        this.$nextTick(function (){
-          this.infoWindowObj.options = (typeof this.$options.propsData.options !== 'undefined')?this.options:this.infoWindowObj.options;
-        });
+        setLocalField(this, 'options', value);
       }
     },
     local_content:{
       get(){
-        return (typeof this.$options.propsData.content !== 'undefined')?this.content:this.infoWindowObj.content;
+        return getLocalField(this, 'content');
       },
       set(value){
-        this.infoWindowObj.content = value;
-        this.$emit('content_changed', value);
-        this.$nextTick(function (){
-          this.infoWindowObj.content = (typeof this.$options.propsData.content !== 'undefined')?this.content:this.infoWindowObj.content;
-        });
+        setLocalField(this, 'content', value);
       }
     },
     local_opened:{
       get(){
-        return (typeof this.$options.propsData.opened !== 'undefined')?this.opened:this.infoWindowObj.opened;
+        return getLocalField(this, 'opened');
       },
       set(value){
         this.infoWindowObj.opened = value;
@@ -117,26 +118,18 @@ export default MapComponent.extend({
     },
     local_position:{
       get(){
-        return (typeof this.$options.propsData.position !== 'undefined')?this.position:this.infoWindowObj.position;
+        return getLocalField(this, 'position');
       },
       set(value){
-        this.infoWindowObj.position = value;
-        this.$emit('position_changed', value);
-        this.$nextTick(function (){
-          this.infoWindowObj.position = (typeof this.$options.propsData.position !== 'undefined')?this.position:this.infoWindowObj.position;
-        });
+        setLocalField(this, 'position', value);
       }
     },
     local_zIndex:{
       get(){
-        return (typeof this.$options.propsData.zIndex !== 'undefined')?this.zIndex:this.infoWindowObj.zIndex;
+        return getLocalField(this, 'zIndex');
       },
       set(value){
-        this.infoWindowObj.zIndex = value;
-        this.$emit('z-index_changed', value);
-        this.$nextTick(function (){
-          this.infoWindowObj.zIndex = (typeof this.$options.propsData.zIndex !== 'undefined')?this.zIndex:this.infoWindowObj.zIndex;
-        });
+        setLocalField(this, 'zIndex', value);
       }
     },
   },
