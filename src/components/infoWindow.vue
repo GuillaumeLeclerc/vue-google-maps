@@ -80,10 +80,10 @@ export default MapComponent.extend({
   data(){
     return {
       infoWindowObj: {
-        options:null,
+        options:{},
         content:null,
         opened:null,
-        position:null,
+        position:{},
         zIndex:null
       }
     };

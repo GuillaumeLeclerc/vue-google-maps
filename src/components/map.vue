@@ -72,15 +72,6 @@ const props = {
     default () {return {}}
   }
 };
-// = {
-//  mapObj: {
-//    required: true,
-//    type: Object,
-//    validator: function (value) {
-//      return (typeof value.center === 'object');
-//    }
-//  }
-//};
 
 const events = [
   'click',
@@ -95,10 +86,6 @@ const events = [
   'idle',
   'resize',
   'tilesloaded',
-//  'center_changed',
-//  'zoom_changed',
-//  'heading_changed',
-//  'mapTypeId_changed',
   'bounds_changed'
 ];
 
@@ -167,12 +154,12 @@ export default {
   data(){
     return {
       mapObj: {
-        center: {lat:null, lng:null},
+        center: {},
         zoom: null,
         heading: null,
         mapTypeId: null,
-        bounds: null,
-        options: null
+        bounds: {},
+        options: {}
       }
     };
   },

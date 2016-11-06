@@ -83,7 +83,7 @@ export default MapComponent.extend({
         paths:[[]],
         draggable:null,
         editable:null,
-        options:null,
+        options:{},
       }
     };
   },

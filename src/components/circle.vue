@@ -91,12 +91,12 @@ export default MapComponent.extend({
     data(){
       return {
         circleObj:{
-          center:null,
+          center:{},
           radius:null,
           bounds:null,
           draggable:null,
           editable:null,
-          options:null
+          options:{}
         }
       };
     },

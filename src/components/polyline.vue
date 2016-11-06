@@ -75,7 +75,7 @@ export default MapComponent.extend({
         path:[],
         draggable:null,
         editable:null,
-        options:null,
+        options:{},
       }
     };
   },

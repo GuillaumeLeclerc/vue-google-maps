@@ -162,16 +162,16 @@ export default MapComponent.extend({
     return {
         markerObj:{
             animation:null,
-            attribution:null,
+            attribution:{},
             clickable:null,
             cursor:null,
             draggable:null,
-            icon:null,
+            icon:{},
             label:null,
             opacity:null,
-            place:null,
-            position:null,
-            shape:null,
+            place:{},
+            position:{},
+            shape:{},
             title:null,
             zIndex:null,
             visible:null
