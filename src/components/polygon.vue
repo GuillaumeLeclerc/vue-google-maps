@@ -152,7 +152,7 @@ export default MapComponent.extend({
     if (!options.paths) {
       delete options.paths;
     }
-    this.$polygonObject = new google.maps.Polygon(options);
+    this.$polygonObject = this.createPolygonObject(options);
 
     const localProps = _.clone(polygonProps);
     //we don't want the propBinder to handle this one because it is specific
@@ -237,6 +237,11 @@ export default MapComponent.extend({
       this.$polygonObject.setMap(null);
     }
   },
+  methods:{
+    createPolygonObject(options){
+        return new google.maps.Polygon(options);
+    }
+  }
 });
 </script>
 

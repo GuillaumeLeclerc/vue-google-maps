@@ -54,7 +54,7 @@ export default MapComponent.extend({
   },
   deferredReady () {
     const options = _.clone(this.getPropsValues());
-    this.$clusterObject = new MarkerClusterer(this.$map, [], options);
+    this.$clusterObject = this.createMarkerClusterObject(this.$map, [], options);
 
     propsBinder(this, this.$clusterObject, props, {
       afterModelChanged: (a, v) => {
@@ -70,6 +70,9 @@ export default MapComponent.extend({
     this.$emit('cluster-destroyed', this.$clusterObject, this.$map);
   },
   methods: {
+    createMarkerClusterObject(map, opt_markers, opt_options){
+        return new MarkerClusterer(map, opt_markers, opt_options)
+    },
     clusterReady(element) {
       //console.log('emit cluster-ready', this, element);
       element.$emit('cluster-ready', this.$clusterObject, this.$map);

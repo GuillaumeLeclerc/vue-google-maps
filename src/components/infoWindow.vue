@@ -188,7 +188,9 @@ export default MapComponent.extend({
           this.$infoWindow.close();
         }
     },
-
+    createInfoWindowObject(options){
+      return new google.maps.InfoWindow(options);
+    },
     createInfoWindow(map) {
       var el = document.createElement('div');
       el.innerHTML = this.local_content;
@@ -205,7 +207,7 @@ export default MapComponent.extend({
         options.position = this.local_position;
       }
 
-      this.$infoWindow = new google.maps.InfoWindow(options);
+      this.$infoWindow = this.createInfoWindowObject(options);
 
       // Binding
       const propsToBind = _.clone(infoWindowProps);

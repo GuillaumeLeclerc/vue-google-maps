@@ -125,10 +125,12 @@ export default MapComponent.extend({
         options.map = this.$map;
         this.createRectangle(options, this.$map);
     },
-
     methods: {
+        createRectangleObject(options){
+            return new google.maps.Rectangle(options);
+        },
         createRectangle (options, map) {
-            this.$rectangleObject = new google.maps.Rectangle(options);
+            this.$rectangleObject = this.createRectangleObject(options);
             propsBinder(this, this.$rectangleObject, rectangleProps);
             eventBinder(this, this.$rectangleObject, events);
 
@@ -138,9 +140,7 @@ export default MapComponent.extend({
 
             this.$watch('bounds_changed', updateBounds, {deep: true});
         },
-
     },
-             
     destroyed () {
         if (this.$rectangleObject) {
           this.$rectangleObject.setMap(null);

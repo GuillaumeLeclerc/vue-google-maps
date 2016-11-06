@@ -135,7 +135,7 @@ export default MapComponent.extend({
     const options = _.clone(this.getPropsValues());
     delete options.options;
     _.assign(options, this.local_options);
-    this.$polyLineObject = new google.maps.Polyline(options);
+    this.$polyLineObject = this.createPolylineObject(options);
 
     this.$polyLineObject.setMap(this.$map);
 
@@ -181,7 +181,11 @@ export default MapComponent.extend({
     // Display the map
     this.$polyLineObject.setMap(this.$map);
   },
-
+  methods:{
+    createPolylineObject(options){
+      return new google.maps.Polyline(options);
+    }
+  }
 });
 </script>
 

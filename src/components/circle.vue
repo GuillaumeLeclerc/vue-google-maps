@@ -167,7 +167,7 @@ export default MapComponent.extend({
 
     methods: {
         createCircle (options, map) {
-            this.$circleObject = new google.maps.Circle(options);
+            this.$circleObject = this.createCircleObject(options);
             // we cant bind bounds because there is no `setBounds` method
             // on the Circle object
             const boundProps = _.clone(circleProps);
@@ -183,6 +183,9 @@ export default MapComponent.extend({
             // because center is an object and we need to be warned even if only the lat or lng change. not the whole reference
             this.$watch('local_center', updateBounds, {deep: true});
             updateBounds();
+        },
+        createCircleObject(options){
+            return new google.maps.Circle(options)
         }
     },
 
