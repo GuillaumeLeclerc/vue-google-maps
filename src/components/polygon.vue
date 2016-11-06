@@ -143,9 +143,9 @@ export default MapComponent.extend({
   },
 
   deferredReady() {
-    const options = _.clone(this.polygonObj);
+    const options = _.clone(this.getPropsValues());
     delete options.options;
-    _.assign(options, this.options);
+    _.assign(options, this.local_options);
     if (!options.path) {
       delete options.path;
     }
