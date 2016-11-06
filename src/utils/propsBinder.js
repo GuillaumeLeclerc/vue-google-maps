@@ -43,12 +43,12 @@ export default (vueElement, googleMapsElement, props, options) => {
         if (stable < 0) {
           const value = googleMapsElement[getMethodName]();
           if (value instanceof google.maps.LatLng) {
-            vueElement[attribute] = {
+            vueElement['local_'+attribute] = {
               lat: value.lat(),
               lng: value.lng()
             };
           } else { //TODO Handle more google types !!
-            vueElement[attribute] = value;
+            vueElement['local_'+attribute] = value;
           }
         }
       };

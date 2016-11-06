@@ -41,9 +41,22 @@ const infoWindowProps = {
 }
 
 const props = {
-  infoWindowObj: {
-    required: true,
+  options: {
     type: Object,
+    default(){return {};}
+  },
+  content: {
+    default(){return null;}
+  },
+  opened: {
+    type: Boolean,
+    default(){return true;}
+  },
+  position: {
+    type: Object,
+  },
+  zIndex: {
+    type: Number,
   }
 }
 
@@ -55,65 +68,94 @@ const events = [
 
 export default MapComponent.extend({
   props: props,
+  data(){
+    return {
+      infoWindowObj: {
+        opened:true
+      }
+    };
+  },
   computed:{
-    options:{
+    local_options:{
       get(){
-        return this.infoWindowObj.options;
+        return (typeof this.$options.propsData.options !== 'undefined')?this.options:this.infoWindowObj.options;
       },
       set(value){
-        this.infoWindowObj.options = value?value:{};
+        this.infoWindowObj.options = value;
+        this.$emit('options_changed', value);
+        this.$nextTick(function (){
+          this.infoWindowObj.options = (typeof this.$options.propsData.options !== 'undefined')?this.options:this.infoWindowObj.options;
+        });
       }
     },
-    content:{
+    local_content:{
       get(){
-        return this.infoWindowObj.content;
+        return (typeof this.$options.propsData.content !== 'undefined')?this.content:this.infoWindowObj.content;
       },
       set(value){
         this.infoWindowObj.content = value;
+        this.$emit('content_changed', value);
+        this.$nextTick(function (){
+          this.infoWindowObj.content = (typeof this.$options.propsData.content !== 'undefined')?this.content:this.infoWindowObj.content;
+        });
       }
     },
-    opened:{
+    local_opened:{
       get(){
-        return this.infoWindowObj.opened;
+        return (typeof this.$options.propsData.opened !== 'undefined')?this.opened:this.infoWindowObj.opened;
       },
       set(value){
         this.infoWindowObj.opened = value;
+        this.$emit('opened_changed', value);
+        this.$nextTick(function (){
+          if (this.infoWindowObj.opened == this.local_opened)
+            return;
+          this.infoWindowObj.opened = this.opened;
+          this.openInfoWindow();
+        });
       }
     },
-    position:{
+    local_position:{
       get(){
-        return this.infoWindowObj.position;
+        return (typeof this.$options.propsData.position !== 'undefined')?this.position:this.infoWindowObj.position;
       },
       set(value){
         this.infoWindowObj.position = value;
+        this.$emit('position_changed', value);
+        this.$nextTick(function (){
+          this.infoWindowObj.position = (typeof this.$options.propsData.position !== 'undefined')?this.position:this.infoWindowObj.position;
+        });
       }
     },
-    zIndex:{
+    local_zIndex:{
       get(){
-        return this.infoWindowObj.zIndex;
+        return (typeof this.$options.propsData.zIndex !== 'undefined')?this.zIndex:this.infoWindowObj.zIndex;
       },
       set(value){
         this.infoWindowObj.zIndex = value;
+        this.$emit('z-index_changed', value);
+        this.$nextTick(function (){
+          this.infoWindowObj.zIndex = (typeof this.$options.propsData.zIndex !== 'undefined')?this.zIndex:this.infoWindowObj.zIndex;
+        });
       }
     },
   },
   created() {
     this.$on('marker-ready',this.markerReady);
     this.$markerObject = null;
-    this.infoWindowObj.options = (typeof this.infoWindowObj.options  === 'undefined')?{}:this.infoWindowObj.options;
-    this.infoWindowObj.content = (typeof this.infoWindowObj.content  === 'undefined')?null:this.infoWindowObj.content;
-    this.infoWindowObj.opened = (typeof this.infoWindowObj.opened  === 'undefined')?true:this.infoWindowObj.opened;
-    this.infoWindowObj.position = (typeof this.infoWindowObj.position  === 'undefined')?null:this.infoWindowObj.position;
-    this.infoWindowObj.zIndex = (typeof this.infoWindowObj.zIndex  === 'undefined')?null:this.infoWindowObj.zIndex;
+    this.infoWindowObj.options = this.options;
+    this.infoWindowObj.content = this.content;
+    this.infoWindowObj.opened = this.opened;
+    this.infoWindowObj.position = this.position;
+    this.infoWindowObj.zIndex = this.zIndex;
   },
-
   mounted () {
     // if the user set the content of the info window by adding children to the 
     // InfoWindow element
     this.$el.style.display='none';
     if (this.$el.getElementsByClassName('you-will-never-find-this').length === 0) {
       const innerChanged = () => {
-        this.content = this.$el.innerHTML;
+        this.local_content = this.$el.innerHTML;
       }
       innerChanged();
       this.disconnect = mutationObserver(this.$el, innerChanged);
@@ -139,7 +181,7 @@ export default MapComponent.extend({
 
   methods: {
     openInfoWindow () {
-        if(this.opened) {
+        if(this.local_opened) {
           if (this.$markerObject !== null) {
             this.$infoWindow.open(this.$map, this.$markerObject);
           } else {
@@ -152,18 +194,18 @@ export default MapComponent.extend({
 
     createInfoWindow(map) {
       var el = document.createElement('div');
-      el.innerHTML = this.content;
+      el.innerHTML = this.local_content;
 
       google.maps.event.addDomListener(el, 'click', (ev) => {
         this.$emit('g-click', ev);
       });
 
       // setting options
-      const options = _.clone(this.options);
+      const options = _.clone(this.infoWindowObj.options);
       options.content = el;
       // only set the position if the info window is not bound to a marker
       if (this.$markerObject === null) {
-        options.position = this.position;
+        options.position = this.local_position;
       }
 
       this.$infoWindow = new google.maps.InfoWindow(options);
@@ -176,10 +218,10 @@ export default MapComponent.extend({
 
       // watching
       this.$infoWindow.addListener('closeclick', () => {
-        this.opened = false;
+        this.local_opened = false;
       });
 
-      this.$watch('opened', () => {
+      this.$watch('local_opened', () => {
         this.openInfoWindow();
       });
 
@@ -187,11 +229,9 @@ export default MapComponent.extend({
       this.openInfoWindow();
     },
     markerReady(marker, map) {
-      if (this.destroyed)
-        return;
       this.$markerObject = marker.$markerObject;
       marker.$on('g-click', () => {
-        this.opened = !this.opened;
+        this.local_opened = !this.local_opened;
       });
     },
     getParentAcceptInfoWindow(child){
