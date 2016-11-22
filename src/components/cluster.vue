@@ -1,44 +1,60 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
 <template>
-<slot></slot>
+    <div>
+        <slot></slot>
+    </div>
 </template>
 
 <script>
 
 import Q from 'q';
 import _ from 'lodash';
-import propsBinder from '../utils/propsBinder.js'
+import eventHub from '../utils/eventHub';
+import propsBinder from '../utils/propsBinder.js';
 import MapComponent from './mapComponent';
-import getPropsValuesMixin from '../utils/getPropsValuesMixin.js'
-require('js-marker-clusterer');
+import getPropsValuesMixin from '../utils/getPropsValuesMixin.js';
+var MarkerClusterer = require('marker-clusterer-plus');
 
 const props = {
   maxZoom: {
-    type: Number,
-    twoWay: false
+    type: Number
   },
   calculor: {
-    type: Function,
-    twoWay: false
+    type: Function
   },
   gridSize: {
-    type: Number,
-    twoWay: false
+    type: Number
   },
   styles: {
-    type: Array,
-    twoWay: false
+    type: Array
   }
 };
 
 export default MapComponent.extend({
   mixins: [getPropsValuesMixin],
   props: props,
-
+  computed:{
+    local_maxZoom(){
+      return this.maxZoom;
+    },
+    local_calculor(){
+      return this.calculor;
+    },
+    local_gridSize(){
+      return this.gridSize;
+    },
+    local_styles(){
+      return this.styles;
+    },
+  },
+  created(){
+    this._acceptMarker = true;
+    this.$on('register-marker', this.clusterReady);
+  },
   deferredReady () {
     const options = _.clone(this.getPropsValues());
-    this.$clusterObject = new MarkerClusterer(this.$map, [], options);
+    this.$clusterObject = this.createMarkerClusterObject(this.$map, [], options);
 
     propsBinder(this, this.$clusterObject, props, {
       afterModelChanged: (a, v) => {
@@ -48,15 +64,19 @@ export default MapComponent.extend({
       }
     });
   },
-
-  detached() {
+  destroyed() {
     this.$clusterObject.clearMarkers();
+    this.$off('register-marker', this.clusterReady);
+    this.$emit('cluster-destroyed', this.$clusterObject, this.$map);
   },
-
-  events: {
-    'register-marker' (element) {
+  methods: {
+    createMarkerClusterObject(map, opt_markers, opt_options){
+        return new MarkerClusterer(map, opt_markers, opt_options)
+    },
+    clusterReady(element) {
+      //console.log('emit cluster-ready', this, element);
       element.$emit('cluster-ready', this.$clusterObject, this.$map);
     }
   }
-})
+});
 </script>

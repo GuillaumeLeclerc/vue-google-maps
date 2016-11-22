@@ -1,34 +1,33 @@
 /* vim: set softtabstop=2 shiftwidth=2 expandtab : */
 
 <template>
-<div class="vue-map-container">
-  <div class="vue-map"></div>
-  <slot></slot>
-</div>
+    <div class="vue-map-container">
+        <div class="vue-map"></div>
+        <slot></slot>
+    </div>
 </template>
 
 <script>
 import Q from 'q';
 import _ from 'lodash';
-
+import eventHub from '../utils/eventHub';
 import {loaded} from '../manager.js';
 import {DeferredReadyMixin} from '../deferredReady.js';
 import eventsBinder from '../utils/eventsBinder.js';
 import propsBinder from '../utils/propsBinder.js';
-import Vue from 'vue'
-import {DeferredReady} from '../deferredReady.js'
-import getPropsMixin from '../utils/getPropsValuesMixin.js'
+import Vue from 'vue';
+import {DeferredReady} from '../deferredReady.js';
+import getPropsMixin from '../utils/getPropsValuesMixin.js';
+import {getParentTest} from '../utils/getParentTest';
 
 Vue.use(DeferredReady);
 
-const props = {
+const mapsProps = {
   center: {
-    required: true,
     twoWay: true,
     type: Object
   },
   zoom: {
-    required: false,
     twoWay: true,
     type: Number
   },
@@ -41,11 +40,34 @@ const props = {
     type: String
   },
   bounds: {
-    type: Object,
     twoWay: true,
+    type: Object,
   },
   options: {
     twoWay: false,
+    type: Object,
+  }
+};
+
+const props = {
+  center: {
+    type: Object,
+    required: true
+  },
+  zoom: {
+    type: Number,
+    default () {return 8;}
+  },
+  heading: {
+    type: Number
+  },
+  mapTypeId: {
+    type: String
+  },
+  bounds: {
+    type: Object,
+  },
+  options: {
     type: Object,
     default () {return {}}
   }
@@ -74,25 +96,25 @@ const callableMethods = [
   'fitBounds'
 ];
 
-const methods = {};
-
 /**
   Implementation note: this signal should only be
   called after the map has been initialized
 
 **/
 const registerChild = function (child, type) {
+  //console.log('registerChild', this, child);
   if (!this.mapObject)
     throw new Error("Map not initialized");
-  child.$emit('map-ready', this.mapObject);
+    child.$emit('map-ready', this.mapObject);
   // Simpler: child.$map = mapObject but not so
   // modular
 }
 
+const methods = {registerChild:registerChild};
+
 const eventListeners = {
-  'register-component': registerChild,
   'g-bounds_changed' () {
-    this.bounds=this.mapObject.getBounds();
+    this.local_bounds=this.mapObject.getBounds();
   },
   'g-fitBounds' (bounds) {
     if (this.mapObject && bounds) {
@@ -115,19 +137,110 @@ _.each(callableMethods, function (methodName) {
   eventListeners['g-' + methodName] = applier;
   methods[methodName] = applier;
 });
-
+const getLocalField = function (self, field){
+  return (typeof self.$options.propsData[field] !== 'undefined')?self[field]:self.mapObj[field];
+};
+const setLocalField = function (self, field, value){
+  self.mapObj[field] = value;
+  self.$emit(field+'_changed', value);
+  self.$nextTick(function (){
+    self.mapObj[field] = getLocalField(self, field);
+  });
+};
 export default {
   mixins: [getPropsMixin, DeferredReadyMixin],
   props: props,
-  replace:false, // necessary for css styles
+  //replace:false, // necessary for css styles
+  data(){
+    return {
+      mapObj: {
+        center: {},
+        zoom: null,
+        heading: null,
+        mapTypeId: null,
+        bounds: {},
+        options: {}
+      }
+    };
+  },
+  computed:{
+    local_center:{
+      get(){
+        return getLocalField(this, 'center');
+      },
+      set(value){
+        setLocalField(this, 'center', value);
+      }
+    },
+    local_zoom:{
+      get(){
+        return getLocalField(this, 'zoom');
+      },
+      set(value){
+        setLocalField(this, 'zoom', value);
+      }
+    },
+    local_heading:{
+      get(){
+        return getLocalField(this, 'heading');
+      },
+      set(value){
+        setLocalField(this, 'heading', value);
+      }
+    },
+    local_mapTypeId:{
+      get(){
+        return getLocalField(this, 'mapTypeId');
+      },
+      set(value){
+        setLocalField(this, 'mapTypeId', value);
+      }
+    },
+    local_bounds:{
+      get(){
+        return getLocalField(this, 'bounds');
+      },
+      set(value){
+        setLocalField(this, 'bounds', value);
+      }
+    },
+    local_options:{
+      get(){
+        return getLocalField(this, 'options');
+      },
+      set(value){
+        setLocalField(this, 'options', value);
+      }
+    }
+  },
+  beforeCreate(){
+    this._isMap = true;
+  },
   created() {
+    //console.log('created Map', this);
+    this.$on('register-component', this.registerChild);
+    var self = this;
+    _.forEach(eventListeners, function(event, index){
+      self.$on(index, event);
+    });
     this.mapCreatedDefered = new Q.defer();
     this.mapCreated = this.mapCreatedDefered.promise;
-  },
 
-  ready() {
+    this.mapObj.center = this.center;
+    this.mapObj.zoom = this.zoom;
+    this.mapObj.heading = this.heading;
+    this.mapObj.mapTypeId = this.mapTypeId;
+    this.mapObj.bounds = this.bounds;
+    this.mapObj.options = this.options;
   },
-
+  destroyed(){
+    //console.log('destroy Map', this);
+    var self = this;
+    _.forEach(eventListeners, function(event, index){
+      self.$off(index, event);
+    });
+    this.$off('register-component', this.registerChild);
+  },
   deferredReady() {
     return loaded.then(() => {
       // getting the DOM element where to create the map
@@ -141,7 +254,7 @@ export default {
       this.mapObject = new google.maps.Map(element, options);
 
       // we con't want to bind props because it's a kind of "computed" property
-      const boundProps = _.clone(props);
+      const boundProps = _.clone(mapsProps);
       delete boundProps.bounds;
       //binding properties (two and one way)
       propsBinder(this, this.mapObject, boundProps);
@@ -161,23 +274,22 @@ export default {
       throw error;
     });
   },
-  events: eventListeners,
   methods: methods
-}
+};
 </script>
 
 <style lang="less">
 
-.full() {
-  width: 100%;
-  height:100%;
-}
+    .full() {
+        width: 100%;
+        height: 100%;
+    }
 
-.vue-map-container {
-  .full();
-  .vue-map {
-    .full();
-  }
-}
+    .vue-map-container {
+        .full();
+        .vue-map {
+            .full();
+        }
+    }
 
 </style>

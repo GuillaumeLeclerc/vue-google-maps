@@ -12,9 +12,9 @@ If you want to write google map this way :
 
 ```html
 <map
-  :center="{lat:10, lng:10}"
-  :map-type-id="terrain"
-  :zoom="7"
+    :center="{lat: 10, lng: 10}"
+    map-type-id='terrain'
+    :zoom="7"
 ></map>
 ```
 
@@ -22,15 +22,16 @@ Or use the power of Vue.js within a google map like this:
 ```html
 <template>
   <map
-    :center="center"
-    :zoom="7"
+    :center="mapObj.center"
+    :map-type-id="mapObj.mapTypeId"
+    :zoom="mapObj.zoom"
   >
     <marker 
       v-for="m in markers"
-      :position.sync="m.position"
-      :clickable="true"
-      :draggable="true"
-      @g-click="center=m.position"
+      :position="m.position"
+      @position_changed="m.position=$event"
+      :draggable="m.draggable"
+      @g-dblclick="mapObj.center=m.position"
     ></marker>
   </map>
 </template>
@@ -43,13 +44,23 @@ Or use the power of Vue.js within a google map like this:
   export default {
     data () {
       return {
-        center: {lat: 10.0, lng: 10.0},
+        mapObj: {
+          center: {lat: 10, lng: 10},
+          mapTypeId: "terrain",
+          zoom: 7
+        },
         markers: [{
-          position: {lat: 10.0, lng: 10.0}
+          position: {lat: 10.0, lng: 10.0},
+          draggable:true
         }, {
-          position: {lat: 11.0, lng: 11.0}
-        }]
+          position: {lat: 11.0, lng: 11.0},
+          draggable:true
+        }]     
       }
+    },
+    components: {
+        Map, 
+        Marker
     }
   }
 </script>
@@ -99,16 +110,16 @@ However you will need to include Vue and Lodash beforehand:
 
 ```html
 <head>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.17/vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.6.1/lodash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.3/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js"></script>
 <script src="dist/vue-google-maps.js"></script>
 
 </head>
 <body>
 
 <google-map style="width: 100%; height: 100%; position: absolute; left:0; top:0"
-    :center="{lat: 1.38, lng: 103.8}"
-    :zoom="12"
+    :center="center"
+    :zoom="zoom"
 >
 
 </google-map>
@@ -120,8 +131,10 @@ VueGoogleMap.load({
 Vue.component('google-map', VueGoogleMap.Map);
 new Vue({
     el: 'body',
-});
-
+    data:{
+         center: {lat: 1.38, lng: 103.8},
+         zoom: 12
+     }
 </script>
 
 </body>
@@ -134,7 +147,7 @@ To enable any `vue-google-maps` components you need to set your api token:
 ```javascript
 load({
   key: 'YOUR_API_TOKEN',
-  v: '3.24',                // Google Maps API version
+  v: '3.26',                // Google Maps API version
   // libraries: 'places',   // If you want to use places input
 })
 // OR (depending on how you refereced it)
