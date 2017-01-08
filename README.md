@@ -50,6 +50,10 @@ Or use the power of Vue.js within a google map like this:
           position: {lat: 11.0, lng: 11.0}
         }]
       }
+    },
+    components: {
+      Map,
+      Marker
     }
   }
 </script>
