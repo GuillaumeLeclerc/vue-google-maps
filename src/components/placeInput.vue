@@ -1,7 +1,7 @@
 <template>
     <label>
         <span v-text="label"></span>
-        <input type="text" v-el:input :placeholder="placeholder" :class="class"/>
+        <input type="text" v-el:input :placeholder="placeholder" :class="class" :name="name" />
     </label>
 </template>
 
@@ -44,6 +44,11 @@
       class: {
           required: false,
           type: String
+      },
+      name: {
+          required: false,
+          type: String,
+          default: null
       },
       label: {
           required: false,
