@@ -64,6 +64,8 @@ const props = {
   visible: {
     twoWay: true,
     default: 'auto'
+  },
+  id: {
   }
 }
 
