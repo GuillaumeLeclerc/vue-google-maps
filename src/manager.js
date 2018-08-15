@@ -71,10 +71,10 @@ export const load = (apiKey, version, libraries, loadCn) => {
     }
     options['callback'] = 'vueGoogleMapsInit';
     
-    let baseUrl = 'https://maps.googleapis.com/';
+    let baseUrl = '//maps.googleapis.com/';
 
     if (typeof loadCn == 'boolean' && loadCn === true) {
-      baseUrl = 'http://maps.google.cn/';
+      baseUrl = '//maps.google.cn/';
     } 
 
     let url = baseUrl + 'maps/api/js?' + 
